@@ -29,63 +29,23 @@
  */
 class Solution {
     public List<String> generateParenthesis(int n) {
-        List<List<Integer>> integers = new ArrayList<>();
-        split(integers, new ArrayList<>(), n);
-        return integers.stream().map(this::list2Str).collect(Collectors.toList());
+        List<String> list = new ArrayList<>();
+        bt(list, "", 0, 0, n);
+        return list;
     }
 
-    public void split(List<List<Integer>> lists, List<Integer> initList, int n) {
-        for (int a = 0; a < n; a++) {
-            List<Integer> list = new ArrayList<>(initList);
-            int b = n - a;
-
-            if (a > 1) {
-                List<Integer> newList = new ArrayList<>(initList);
-                newList.add(b);
-
-                for (int i = 1; i <= newList.stream().reduce(0, Math::addExact); i++) {
-                    newList.add(-i);
-                    split(lists, newList, a);
-                    newList.remove(newList.size() - 1);
-                }
-
-            } else {
-                if (b > 0) {
-                    list.add(b);
-
-                    if (a > 0) {
-                        for (int i = 1; i <= (list.stream().reduce(0, Math::addExact)); i++) {
-                            ArrayList<Integer> tmpList = new ArrayList<>(list);
-                            tmpList.add(-i);
-                            tmpList.add(a);
-                            tmpList.add(-(tmpList.stream().reduce(0, Math::addExact)));
-                            lists.add(tmpList);
-                        }
-                    } else {
-                        list.add(-(list.stream().reduce(0, Math::addExact)));
-                        lists.add(list);
-                    }
-
-                }
-
-            }
+    public void bt(List<String> list, String cur, int left, int right, int n) {
+        if (cur.length() == n * 2) {
+            list.add(cur);
+            return;
         }
-    }
 
-    public String list2Str(List<Integer> list) {
-        StringBuilder sb = new StringBuilder();
-        for (Integer integer : list) {
-            if (integer > 0) {
-                for (Integer i = 0; i < integer; i++) {
-                    sb.append("(");
-                }
-            } else {
-                for (int i = 0; i < Math.abs(integer); i++) {
-                    sb.append(")");
-                }
-            }
+        if (left < n) {
+            bt(list, cur + "(", left + 1, right, n);
         }
-        return sb.toString();
+        if (right < left) {
+            bt(list, cur + ")", left, right + 1, n);
+        }
     }
 }
 
