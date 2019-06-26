@@ -59,19 +59,24 @@ class Solution {
             return nums.length;
         }
 
-        int len = nums.length;
 
-        for (int i = 0; i < len - 1; i++) {
+        int len = nums.length;
+        boolean[] booleans = new boolean[len];
+
+        for (int i = 0; i < nums.length - 1; i++) {
             if (nums[i] == nums[i + 1]) {
-                System.arraycopy(nums, i + 2, nums, i + 1, nums.length - i - 2);
+                booleans[i + 1] = true;
                 len--;
-                i--;
             }
         }
 
         int[] ints = new int[len];
-        System.arraycopy(nums, 0, ints, 0, len);
-        nums = ints;
+        for (int i = 0, j = 0; i < nums.length; i++) {
+            if (!booleans[i]) {
+                ints[j++] = nums[i];
+            }
+        }
+        System.arraycopy(ints, 0, nums, 0, len);
 
         return len;
     }
