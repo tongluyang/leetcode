@@ -34,28 +34,21 @@
  */
 class Solution {
     public int jump(int[] nums) {
-        int[] dp = new int[nums.length];
-
-        for (int i = nums.length - 2; i >= 0; i--) {
-            int v = nums[i];
-
-            if (v >= nums.length - i - 1) {
-                dp[i] = 1;
-                continue;
+        int f = 0;
+        int end = 0;
+        int step = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            if (nums[i] + i >= nums.length - 1) {
+                step++;
+                break;
             }
-
-            int step = Integer.MAX_VALUE - 1;
-            for (int j = v; j >= 1; j--) {
-                if (dp[i + j] == 1) {
-                    step = 2;
-                    break;
-                }
-                step = Math.min(dp[i + j] + 1, step);
+            f = Math.max(f, nums[i] + i);
+            if (i == end) {
+                step++;
+                end = f;
             }
-            dp[i] = step;
         }
-
-        return dp[0];
+        return step;
     }
 }
 
