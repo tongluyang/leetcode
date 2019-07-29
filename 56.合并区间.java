@@ -35,22 +35,19 @@ class Solution {
             return intervals;
         }
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-        List<int[]> list = new ArrayList<>();
+        List<int[]> list = new ArrayList<>(intervals.length);
 
-        list.add(Arrays.stream(intervals).reduce((ints, ints2) -> {
-            if (ints[1] >= ints2[0]) {
-                ints[1] = Math.max(ints[1], ints2[1]);
-                return ints;
+        int[] ints = intervals[0];
+        for (int i = 1; i < intervals.length; i++) {
+            if (ints[1] >= intervals[i][0]) {
+                ints[1] = Math.max(ints[1], intervals[i][1]);
             } else {
                 list.add(ints);
-                return ints2;
+                ints = intervals[i];
             }
-        }).get());
-        int[][] result = new int[list.size()][];
-        for (int i = 0; i < list.size(); i++) {
-            result[i] = list.get(i);
         }
-        return result;
+        list.add(ints);
+        return list.toArray(new int[list.size()][]);
     }
 }
 
