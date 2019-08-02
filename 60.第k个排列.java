@@ -84,11 +84,9 @@ class Solution {
         }
     }
 
+    public int[] factorial = new int[]{1,1,2,6,24,120,720,5040,40320};
     public int factorial(int number) {
-        if (number <= 1)
-            return 1;
-        else
-            return number * factorial(number - 1);
+        return factorial[number];
     }
 
 }
