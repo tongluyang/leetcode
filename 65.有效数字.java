@@ -47,9 +47,16 @@
  * C++函数的形式已经更新了。如果你仍然看见你的函数接收 const char * 类型的参数，请点击重载按钮重置你的代码。
  * 
  */
+import java.util.regex.Pattern;
+
 class Solution {
+    static Pattern compile;
+    static {
+        compile = Pattern.compile("^(\\s*[+-]?((\\d+(\\.\\d+)?)|(\\d+\\.)|(\\.\\d+)))(e[+-]?\\d+)?\\s*$");
+    }
+
     public boolean isNumber(String s) {
-        return s.matches("^(\\s*[+-]?((\\d+(\\.\\d+)?)|(\\d+\\.)|(\\.\\d+)))(e[+-]?\\d+)?\\s*$");
+        return compile.matcher(s).find();
     }
 }
 
