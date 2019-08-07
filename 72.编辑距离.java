@@ -54,23 +54,32 @@ class Solution {
         if (word2.length() == 0) {
             return word1.length();
         }
-        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
-        for (int i = 0; i < word1.length(); i++) {
-            for (int j = 0; j < word2.length(); j++) {
-                if (i == 0) {
-                    dp[i][j + 1] = j + 1;
-                }
+        char[] w1 = word1.toCharArray();
+        char[] w2 = word2.toCharArray();
+        int[] dp = new int[w2.length + 1];
+        for (int i = 0; i < w2.length; i++) {
+            dp[i + 1] = i + 1;
+        }
+        int pre = 0;
+        for (int i = 0; i < w1.length; i++) {
+            for (int j = 0; j < w2.length; j++) {
                 if (j == 0) {
-                    dp[i + 1][j] = i + 1;
+                    pre = dp[0];
+                    dp[0] = i + 1;
                 }
-                if (word1.charAt(i) != word2.charAt(j)) {
-                    dp[i + 1][j + 1] = Math.min(Math.min(dp[i][j + 1], dp[i + 1][j]), dp[i][j]) + 1;
+                if (w1[i] == w2[j]) {
+                    int tmp = dp[j + 1];
+                    dp[j + 1] = pre;
+                    pre = tmp;
                 } else {
-                    dp[i + 1][j + 1] = Math.min(Math.min(dp[i][j + 1], dp[i + 1][j]) + 1, dp[i][j]);
+                    int tmp = dp[j + 1];
+                    dp[j + 1] = Math.min(Math.min(dp[j + 1], dp[j]), pre) + 1;
+                    pre = tmp;
                 }
+
             }
         }
-        return dp[word1.length()][word2.length()];
+        return dp[w2.length];
     }
 }
 
