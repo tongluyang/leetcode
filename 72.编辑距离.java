@@ -67,15 +67,13 @@ class Solution {
                     pre = dp[0];
                     dp[0] = i + 1;
                 }
+                int tmp = dp[j + 1];
                 if (w1[i] == w2[j]) {
-                    int tmp = dp[j + 1];
                     dp[j + 1] = pre;
-                    pre = tmp;
                 } else {
-                    int tmp = dp[j + 1];
                     dp[j + 1] = Math.min(Math.min(dp[j + 1], dp[j]), pre) + 1;
-                    pre = tmp;
                 }
+                pre = tmp;
 
             }
         }
