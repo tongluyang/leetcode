@@ -40,14 +40,14 @@ class Solution {
 
     public void combine(List<List<Integer>> result, List<Integer> single, int n, int k) {
         if (single.size() == k) {
-            result.add(single);
+            result.add(new ArrayList<>(single));
             return;
         }
 
         for (int i = single.isEmpty() ? 1 : single.get(single.size() - 1) + 1; i <= n; i++) {
-            ArrayList<Integer> newSingle = new ArrayList<>(single);
-            newSingle.add(i);
-            combine(result, newSingle, n, k);
+            single.add(i);
+            combine(result, single, n, k);
+            single.remove(single.size() - 1);
         }
     }
 }
