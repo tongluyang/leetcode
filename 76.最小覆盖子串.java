@@ -36,8 +36,9 @@ class Solution {
 
         int left = 0;
         int right = 0;
+        int minLeft = 0;
+        int minRight = 0;
         int min = Integer.MAX_VALUE;
-        String result = "";
 
         char[] sa = s.toCharArray();
         char[] ta = t.toCharArray();
@@ -54,30 +55,45 @@ class Solution {
             }
             right++;
 
-            while (isMatch(need, cur)) {
+            boolean certainMatch = false;
+            char single = 0;
+            while (certainMatch || isMatch(need, cur, single)) {
                 if (min > right - left) {
                     min = right - left;
-                    result = s.substring(left, right);
+                    minLeft = left;
+                    minRight = right;
                 }
 
-                if (need.containsKey(sa[left])) {
-                    cur.put(sa[left], cur.getOrDefault(sa[left], 0) - 1);
+                if (!need.containsKey(sa[left])) {
                     left++;
-                } else {
-                    left++;
+                    certainMatch = true;
+                    continue;
                 }
+                certainMatch = false;
+
+                cur.put(sa[left], cur.get(sa[left]) - 1);
+                single = sa[left];
+                left++;
             }
         }
 
-        return result;
+        return s.substring(minLeft, minRight);
     }
 
-    private boolean isMatch(Map<Character, Integer> need, Map<Character, Integer> cur) {
+    private boolean isMatch(Map<Character, Integer> need, Map<Character, Integer> cur, char single) {
+        if (single > 0) {
+            return need.get(single) <= cur.get(single);
+        }
         if (need.size() != cur.size()) {
             return false;
         }
 
-        return need.keySet().stream().map(key -> cur.get(key) >= need.get(key)).reduce((b1, b2) -> b1 && b2).get();
+        for (Character key : need.keySet()) {
+            if (cur.get(key) < need.get(key)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
