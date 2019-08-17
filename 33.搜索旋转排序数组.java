@@ -43,17 +43,28 @@ class Solution {
         if (nums.length == 1) {
             return nums[0] == target ? 0 : -1;
         }
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == target) {
-                return i;
-            }
-            if (i + 1 < nums.length && nums[i] > nums[i + 1]) {
-                if (nums[i] < target || nums[i + 1] > target) {
-                    return -1;
+        int min = 0;
+        int max = nums.length - 1;
+
+        while (min < max) {
+            int mid = (min + max) / 2;
+
+            if (nums[mid] >= nums[0]) {//开始到中间是递增，无旋转点
+                if (target >= nums[0] && target <= nums[mid]) {//目标在前半部分
+                    max = mid;
+                } else {//目标在后半部分
+                    min = mid + 1;
+                }
+            } else {//有旋转
+                if (target <= nums[mid] || target >= nums[0]) {//target在最小到中间或0到最大
+                    max = mid;
+                } else {
+                    min = mid + 1;
                 }
             }
         }
-        return -1;
+
+        return nums[min] == target ? min : -1;
     }
 }
 
