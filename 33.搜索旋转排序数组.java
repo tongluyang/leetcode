@@ -40,9 +40,6 @@ class Solution {
         if (nums.length == 0) {
             return -1;
         }
-        if (nums.length == 1) {
-            return nums[0] == target ? 0 : -1;
-        }
         int min = 0;
         int max = nums.length - 1;
 
