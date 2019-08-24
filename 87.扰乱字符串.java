@@ -70,104 +70,45 @@
  */
 class Solution {
     public boolean isScramble(String s1, String s2) {
-        Map<String, Boolean> mem = new HashMap<>();
-        if (s1.length() == 1) {
-            return s1.equals(s2);
-        }
         if (s1.equals(s2)) {
             return true;
         }
+        if (s1.length() != s2.length()) {
+            return false;
+        }
 
-        char[] chars1 = s1.toCharArray();
-        char[] chars2 = s2.toCharArray();
+        char[] c1 = s1.toCharArray();
+        char[] c2 = s2.toCharArray();
 
-        for (int i = 0; i < chars1.length - 1; i++) {
-            boolean left = true;
-            boolean right = true;
-            boolean[] booleansLeft = new boolean[i + 1];
-            boolean[] booleansRight = new boolean[i + 1];
-            for (int j = 0; j <= i; j++) {
-                int idx = chars2.length;
-                int lastIdx = -1;
-                if (left) {
-                    for (int x = 0; x <= i; x++) {
-                        if (chars2[x] == chars1[j] && !booleansLeft[x]) {
-                            booleansLeft[x] = true;
-                            idx = x;
-                            break;
-                        }
-                    }
-                }
-                if (right) {
-                    for (int x = 0; x <= i; x++) {
-                        if (chars2[chars2.length - 1 - x] == chars1[j] && !booleansRight[x]) {
-                            booleansRight[x] = true;
-                            lastIdx = chars2.length - 1 - x;
-                            break;
-                        }
-                    }
-                }
+        return check(c1, c2, 0, 0, c1.length);
+    }
 
-                if ((left && idx <= i)) {
-                    left = true;
-                    if (i == j && check(s1, s2, i, true, mem)) {
-                        return true;
-                    }
-                } else {
-                    left = false;
-                }
-                if (right && lastIdx >= s2.length() - 1 - i) {
-                    right = true;
-                    if (i == j && check(s1, s2, i, false, mem)) {
-                        return true;
-                    }
-                } else {
-                    right = false;
-                }
-                if (!left && !right) {
-                    break;
-                }
+    public boolean check(char[] c1, char[] c2, int start1, int start2, int len) {
+        if (len == 1) {
+            return c1[start1] == c2[start2];
+        }
+        int[] ints = new int[26];
+        for (int i = 0; i < len; i++) {
+            ints[c1[start1 + i] - 'a']++;
+            ints[c2[start2 + i] - 'a']--;
+        }
+        for (int i : ints) {
+            if (i != 0) {
+                return false;
+            }
+        }
+
+        for (int i = 1; i < len; i++) {// i为相对start的分界点
+            if ((check(c1, c2, start1, start2, i)//前半段匹配前半段
+                    && check(c1, c2, start1 + i, start2 + i, len - i))//剩余后半段匹配剩余后半段
+                    || (check(c1, c2, start1, start2 + len - i, i)//前半段匹配后半段
+                    && check(c1, c2, start1 + i, start2, len - i))) {//剩余后半段匹配剩余前半段
+                return true;
             }
         }
 
         return false;
     }
 
-    public boolean check(String s1, String s2, int point, boolean left, Map<String, Boolean> mem) {
-        String begin1 = s1.substring(0, point + 1);
-        String begin2;
-        if (left) {
-            begin2 = s2.substring(0, point + 1);
-        } else {
-            begin2 = s2.substring(s2.length() - 1 - point);
-        }
-
-        String end1 = s1.substring(point + 1);
-        String end2;
-        if (left) {
-            end2 = s2.substring(point + 1);
-        } else {
-            end2 = s2.substring(0, s2.length() - 1 - point);
-        }
-        Boolean b1 = null;
-        Boolean b2 = null;
-
-        String key1 = begin1 + "-" + begin2;
-        if (mem.get(key1) != null) {
-            b1 = mem.get(key1);
-        }
-
-        String key2 = end1 + "-" + end2;
-        if (mem.get(key2) != null) {
-            b2 = mem.get(key2);
-        }
-        if (b1 == null) {
-            b1 = isScramble(begin1, begin2);
-        }
-        if (b2 == null) {
-            b2 = isScramble(end1, end2);
-        }
-        return b1 && b2;
-    }
 }
 
