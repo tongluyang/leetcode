@@ -53,7 +53,7 @@ class Solution {
         for (int i = 0; i < n; i++) {
             int size = result.size();
             for (int j = size - 1; j >= 0; j--) {
-                result.add(result.get(j) + (int)Math.pow(2, i));
+                result.add(result.get(j) + size);
             }
         }
 
