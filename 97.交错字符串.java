@@ -37,21 +37,29 @@ class Solution {
         char[] c2 = s2.toCharArray();
         char[] c3 = s3.toCharArray();
 
-        return check(c1, c2, c3, 0, 0, 0);
+        return check(c1, c2, c3, 0, 0, 0, new Boolean[c1.length + 1][c2.length + 1]);
     }
 
-    private boolean check(char[] c1, char[] c2, char[] c3, int a, int b, int x) {
+    private boolean check(char[] c1, char[] c2, char[] c3, int a, int b, int x, Boolean[][] mem) {
         if (x >= c3.length) {
             return true;
         }
+        if (mem[a][b] != null) {
+            return mem[a][b];
+        }
         if (a < c1.length && c3[x] == c1[a]) {
-            if (check(c1, c2, c3, a + 1, b, x + 1)) {
+            boolean flag = check(c1, c2, c3, a + 1, b, x + 1, mem);
+            mem[a][b] = flag;
+            if (flag) {
                 return true;
             }
         }
         if (b < c2.length && c3[x] == c2[b]) {
-            return check(c1, c2, c3, a, b + 1, x + 1);
+            boolean flag = check(c1, c2, c3, a, b + 1, x + 1, mem);
+            mem[a][b] = flag;
+            return flag;
         }
+        mem[a][b] = false;
         return false;
     }
 }
