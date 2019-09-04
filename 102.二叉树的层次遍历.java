@@ -55,26 +55,23 @@ class Solution {
     }
 
     private void levelOrder(List<List<Integer>> result, TreeNode root) {
-        Queue<Object> queue = new LinkedList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
-        queue.offer(0);
         while (!queue.isEmpty()) {
-            TreeNode node = (TreeNode) queue.poll();
-            Integer level = (Integer) queue.poll();
-            if (node != null && level != null) {
-                List<Integer> row;
-                if (result.size() > level) {
-                    row = result.get(level);
-                } else {
-                    row = new ArrayList<>();
-                    result.add(row);
-                }
+            int size = queue.size();
+            List<Integer> row = new ArrayList<>();
+            result.add(row);
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                assert node != null;
                 row.add(node.val);
 
-                queue.offer(node.left);
-                queue.offer(level + 1);
-                queue.offer(node.right);
-                queue.offer(level + 1);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
             }
         }
     }
