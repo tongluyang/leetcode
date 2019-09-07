@@ -50,31 +50,31 @@
  */
 class Solution {
     public TreeNode sortedListToBST(ListNode head) {
-        List<Integer> list = new ArrayList<>();
-        while (head != null) {
-            list.add(head.val);
-            head = head.next;
-        }
-        
-        return sortedArrayToBST(list.toArray(new Integer[]{}));
-    }
-
-
-    public TreeNode sortedArrayToBST(Integer[] nums) {
-        return sortedArrayToBST(nums, 0, nums.length - 1);
-    }
-
-    private TreeNode sortedArrayToBST(Integer[] nums, int start, int end) {
-        if (start > end) {
+        if (head == null) {
             return null;
         }
-        int mid = (end + start + 1) / 2;
-        TreeNode root = new TreeNode(nums[mid]);
-        if (start == end) {
-            return root;
+        ListNode fast = head;
+        ListNode slow = head;
+        ListNode pre = null;
+
+        while (true) {
+            if (fast.next == null || fast.next.next == null) {
+                break;
+            }
+            fast = fast.next.next;
+            pre = slow;
+            slow = slow.next;
         }
-        root.left = sortedArrayToBST(nums, start, mid - 1);
-        root.right = sortedArrayToBST(nums, mid + 1, end);
+
+        TreeNode root = new TreeNode(slow.val);
+
+        if (pre != null) {
+            pre.next = null;
+            root.left = sortedListToBST(head);
+        }
+        if (slow.next != null) {
+            root.right = sortedListToBST(slow.next);
+        }
         return root;
     }
 }
