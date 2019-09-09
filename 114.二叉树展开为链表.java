@@ -49,28 +49,24 @@
  */
 class Solution {
     public void flatten(TreeNode root) {
-        if (root == null || (root.left == null && root.right == null)) {
-            return;
-        }
-        List<Integer> list = new ArrayList<>();
-        flatten(root, list);
-        list.remove(0);
-        TreeNode tmpRoot = root;
-        root.left = null;
-        for (Integer integer : list) {
-            TreeNode right = new TreeNode(integer);
-            tmpRoot.right = right;
-            tmpRoot = right;
-        }
-    }
-
-    private void flatten(TreeNode root, List<Integer> list) {
         if (root == null) {
             return;
         }
-        list.add(root.val);
-        flatten(root.left, list);
-        flatten(root.right, list);
+
+        flatten(root.left);
+        flatten(root.right);
+
+        if (root.left == null) {
+            return;
+        }
+        TreeNode tmpRight = root.right;
+        root.right = root.left;
+        TreeNode least = root.right;
+        while (least.right != null) {
+            least = least.right;
+        }
+        least.right = tmpRight;
+        root.left = null;
     }
 }
 
