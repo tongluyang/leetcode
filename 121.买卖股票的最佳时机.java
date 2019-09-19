@@ -42,13 +42,12 @@ class Solution {
             if (prices[i] > prices[i + 1]) {
                 continue;
             }
-            if (i > 0 && prices[i] > prices[i - 1]) {
-                continue;
-            }
             int buy = prices[i];
+            int sell = buy;
             for (int j = i + 1; j < prices.length; j++) {
-                if (prices[j] > buy) {
-                    max = Math.max(max, prices[j] - buy);
+                if (prices[j] > sell) {
+                    sell = prices[j];
+                    max = Math.max(sell - buy, max);
                 }
             }
         }
