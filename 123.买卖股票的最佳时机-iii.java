@@ -45,40 +45,26 @@
  */
 class Solution {
     public int maxProfit(int[] prices) {
-        int maxProfitFirst = 0;
-        int maxProfitSecond;
-        int maxProfit = 0;
-        int minPrice = Integer.MAX_VALUE;
+        if (prices.length == 0) {
+            return 0;
+        }
+        int k = 2;
+        int[][][] dp = new int[prices.length][k + 1][2];
+
         for (int i = 0; i < prices.length; i++) {
-            if (prices[i] < minPrice) {
-                minPrice = prices[i];
-                continue;
-            }
-            if (prices[i] - minPrice > maxProfitFirst) {
-                maxProfitFirst = prices[i] - minPrice;
-            }
-
-            if (i < prices.length - 1 && prices[i] > prices[i + 1]) {
-                maxProfitSecond = maxProfit(prices, i + 1);
-                maxProfit = Math.max(maxProfit, maxProfitFirst + maxProfitSecond);
+            for (int j = k - 1; j >= 0; j--) {//剩余交易次数
+                if (i == 0) {
+                    dp[i][j][0] = 0;
+                    dp[i][j][1] = -prices[i];
+                    continue;
+                }
+                dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);//空仓，昨天空仓今天不动或昨天持仓今天卖出
+                //剩余交易为1时的持仓，如果是买入，是从剩余次数为2的空仓买入的
+                dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i][j + 1][0] - prices[i]);//持仓，昨天持仓今天不动或昨天空仓今天买入，交易次数
             }
         }
-        return Math.max(maxProfit, maxProfitFirst);
-    }
 
-    public int maxProfit(int[] prices, int start) {
-        int maxProfit = 0;
-        int minPrice = Integer.MAX_VALUE;
-        for (int i = start; i < prices.length; i++) {
-            if (prices[i] < minPrice) {
-                minPrice = prices[i];
-                continue;
-            }
-            if (prices[i] - minPrice > maxProfit) {
-                maxProfit = prices[i] - minPrice;
-            }
-        }
-        return maxProfit;
+        return dp[prices.length - 1][0][0];
     }
 }
 
