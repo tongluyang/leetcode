@@ -45,26 +45,20 @@
  */
 class Solution {
     public int maxProfit(int[] prices) {
-        if (prices.length == 0) {
-            return 0;
-        }
-        int k = 2;
-        int[][][] dp = new int[prices.length][k + 1][2];
+        int dp_i00 = 0;//初始，没买没卖，利润0
+//        int dp_i01 = 0;//没买入过，持仓，不可能
+        int dp_i11 = Integer.MIN_VALUE;//持仓，买入一次；第一天的上次，不该参与推理，所以初始化为最小值，让计算结果为第一次买入的利润
+        int dp_i10 = 0;//空仓，买卖一次；空仓，相当于初始利润从0开始
+        int dp_i21 = Integer.MIN_VALUE;//持仓，买入两次；同样，初始持仓只能由买入而来，所以初始化为最小值，让计算结果为新买入产生的利润
+        int dp_i20 = 0;//空仓，买卖两次；空仓，相当于初始利润从0开始
 
-        for (int i = 0; i < prices.length; i++) {
-            for (int j = k - 1; j >= 0; j--) {//剩余交易次数
-                if (i == 0) {
-                    dp[i][j][0] = 0;
-                    dp[i][j][1] = -prices[i];
-                    continue;
-                }
-                dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);//空仓，昨天空仓今天不动或昨天持仓今天卖出
-                //剩余交易为1时的持仓，如果是买入，是从剩余次数为2的空仓买入的
-                dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i][j + 1][0] - prices[i]);//持仓，昨天持仓今天不动或昨天空仓今天买入，交易次数
-            }
+        for (int price : prices) {
+            dp_i20 = Math.max(dp_i20, dp_i21 + price);//上次买卖完不动 或 买两次卖一次后，这次卖出，dp_i21要用上次计算结果，所以要在这次dp_i21计算之前
+            dp_i21 = Math.max(dp_i21, dp_i10 - price);//上次买完不动 或 买卖一次，这次买入，dp_i10要用上次计算结果，所以要在这次dp_i10计算之前
+            dp_i10 = Math.max(dp_i10, dp_i11 + price);//上次买卖完不动 或 买了一次，这次卖出，dp_i11要用上次的结果，所以要在这次dp_i11计算之前
+            dp_i11 = Math.max(dp_i11, dp_i00 - price);//上次买入不动或第一次买
         }
-
-        return dp[prices.length - 1][0][0];
+        return dp_i20;
     }
 }
 
