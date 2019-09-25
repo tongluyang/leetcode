@@ -118,8 +118,9 @@ class Solution {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < word.length(); i++) {
             char[] chars = word.toCharArray();
+            char origin = chars[i];
             for (char c = 'a'; c <= 'z'; c++) {
-                if (chars[i] != c) {
+                if (origin != c) {
                     chars[i] = c;
                     String s = new String(chars);
                     if (wordList.contains(s)) {
