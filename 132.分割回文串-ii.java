@@ -59,8 +59,7 @@ class Solution {
             if (cs[start] != cs[end]) {
                 return false;
             }
-            start++;
-            end--;
+            return true;
         }
         return true;
     }
