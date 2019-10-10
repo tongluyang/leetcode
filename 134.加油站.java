@@ -65,25 +65,19 @@
 // @lc code=start
 class Solution {
     public int canCompleteCircuit(int[] gas, int[] cost) {
-        int id = -1;
+        int start = 0;
+        int rem = 0;
+        int finalRem = 0;
         for (int i = 0; i < gas.length; i++) {
-            int rem = 0;
-            if (rem + gas[i] < cost[i]) {
-                continue;
-            }
-            for (int j = 0; j < gas.length; j++) {
-                int cur = (i + j) % gas.length;
-                rem += gas[cur];
-                rem -= cost[cur];
-                if (rem < 0) {
-                    break;
-                }
-                if (j == gas.length - 1) {
-                    return i;
-                }
+            finalRem += gas[i] - cost[i];//如果最终剩余不小于0，说明肯定有满足条件的出发位置
+            if (rem < 0) {//油不够了，说明之前的起点不行，换成当前位置出发
+                start = i;
+                rem = gas[i] - cost[i];
+            } else {//油够了，加油再出发
+                rem += gas[i] - cost[i];
             }
         }
-        return id;
+        return finalRem < 0 ? -1 : start;
     }
 }
 // @lc code=end
