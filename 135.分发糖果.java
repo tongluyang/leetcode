@@ -46,7 +46,8 @@ class Solution {
         int[] dp = new int[ratings.length];
         Arrays.fill(dp, 1);
         for (int i = 1; i < ratings.length; i++) {
-            if (ratings[i - 1] > ratings[i] && dp[i - 1] <= dp[i]) {//前一个评分高，但糖却不多，处理
+            if (ratings[i - 1] > ratings[i] && dp[i - 1] <= dp[i] //前一个评分高，但糖却不多，处理
+                    && (i + 1 == ratings.length || ratings[i + 1] >= ratings[i])) {//并且后面的分数不再下降了，才处理，因为如果后面还在降，可以交给后面的往前处理
                 for (int j = i; j > 0; j--) {
                     if (ratings[j - 1] > ratings[j] && dp[j - 1] <= dp[j]) {
                         dp[j - 1] = dp[j] + 1;
