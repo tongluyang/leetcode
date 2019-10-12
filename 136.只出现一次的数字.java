@@ -35,11 +35,10 @@
 // @lc code=start
 class Solution {
     public int singleNumber(int[] nums) {
-        int single = 0;
-        for (int num : nums) {
-            single ^= num;
+        for (int i = 1; i < nums.length; i++) {
+            nums[0] ^= nums[i];
         }
-        return single;
+        return nums[0];
     }
 }
 // @lc code=end
