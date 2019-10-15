@@ -48,27 +48,20 @@
 // @lc code=start
 class Solution {
     public boolean wordBreak(String s, List<String> wordDict) {
-        return wordBreak(s, 0, new HashSet<>(wordDict), new Boolean[s.length()]);
-    }
-
-    private boolean wordBreak(String s, int start, Set<String> wordDict, Boolean[] mem) {
-        if (start == s.length()) {
-            return true;
-        }
-        if (mem[start] != null) {
-            return mem[start];
-        }
-        int length = 1;
-        while (start + length <= s.length()) {
-            String str = s.substring(start, start + length);
-            if (wordDict.contains(str)) {
-                if (wordBreak(s, start + str.length(), wordDict, mem)) {
-                    return mem[start] = true;
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        Set<String> set = new HashSet<>(wordDict);
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (dp[j]) {
+                    String str = s.substring(j, i);
+                    if (set.contains(str)) {
+                        dp[i] = true;
+                    }
                 }
             }
-            length++;
         }
-        return mem[start] = false;
+        return dp[s.length()];
     }
 }
 // @lc code=end
