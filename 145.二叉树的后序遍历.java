@@ -42,18 +42,22 @@
  */
 class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
-        List<Integer> result = new ArrayList<>();
-        postorderTraversal(result, root);
-        return result;
-    }
-
-    private void postorderTraversal(List<Integer> result, TreeNode root) {
+        LinkedList<Integer> result = new LinkedList<>();
         if (root == null) {
-            return;
+            return result;
         }
-        postorderTraversal(result, root.left);
-        postorderTraversal(result, root.right);
-        result.add(root.val);
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            if (node == null) {
+                continue;
+            }
+            result.addFirst(node.val);
+            stack.push(node.left);
+            stack.push(node.right);
+        }
+        return result;
     }
 }
 // @lc code=end
