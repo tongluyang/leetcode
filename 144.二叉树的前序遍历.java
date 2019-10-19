@@ -1,5 +1,3 @@
-import java.util.List;
-
 /*
  * @lc app=leetcode.cn id=144 lang=java
  *
@@ -46,17 +44,18 @@ import java.util.List;
 class Solution {
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        preorderTraversal(result, root);
-        return result;
-    }
-
-    private void preorderTraversal(List<Integer> result, TreeNode root) {
-        if (root == null) {
-            return;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.empty()) {
+            TreeNode node = stack.pop();
+            if (node == null) {
+                continue;
+            }
+            result.add(node.val);
+            stack.push(node.right);
+            stack.push(node.left);
         }
-        result.add(root.val);
-        preorderTraversal(result, root.left);
-        preorderTraversal(result, root.right);
+        return result;
     }
 }
 // @lc code=end
