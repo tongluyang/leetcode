@@ -63,6 +63,7 @@ class Solution {
             ListNode next = p.next;
             if (h == null) {
                 h = p;
+                end = p;
             } else {
                 ListNode before = null;
                 ListNode after = h;
@@ -78,11 +79,9 @@ class Solution {
                     } else {
                         before.next = p;
                     }
+                } else {
+                    end = p;
                 }
-            }
-            end = p;
-            while (end.next != next) {
-                end = end.next;
             }
             p = next;
         }
