@@ -65,13 +65,15 @@ class Solution {
                 h = p;
                 end = p;
             } else {
-                ListNode before = null;
-                ListNode after = h;
-                while (p.val > after.val) {
-                    before = after;
-                    after = after.next;
-                }
-                if (p != after) {
+                if (p.val >= end.val) {
+                    end = p;
+                } else {
+                    ListNode before = null;
+                    ListNode after = h;
+                    while (p.val > after.val) {
+                        before = after;
+                        after = after.next;
+                    }
                     end.next = p.next;
                     p.next = after;
                     if (before == null) {
@@ -79,8 +81,6 @@ class Solution {
                     } else {
                         before.next = p;
                     }
-                } else {
-                    end = p;
                 }
             }
             p = next;
