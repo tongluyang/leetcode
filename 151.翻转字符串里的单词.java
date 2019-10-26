@@ -58,7 +58,7 @@
 // @lc code=start
 class Solution {
     public String reverseWords(String s) {
-        String[] words = s.split("([ \\u00A0])+");
+        String[] words = s.split("[ \\u00A0]+");
         if (words.length == 0) {
             return "";
         }
@@ -72,7 +72,7 @@ class Solution {
                 sb.append(word);
                 continue;
             }
-            sb.insert(0, word + " ");
+            sb.insert(0, " ").insert(0, word);
         }
         return sb.toString();
     }
