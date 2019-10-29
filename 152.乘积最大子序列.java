@@ -33,44 +33,25 @@
 // @lc code=start
 class Solution {
     public int maxProduct(int[] nums) {
-        //dp[0] 最大积
-        //dp[1] 负基数
-        //dp[2] 基数
-        Integer[][] dp = new Integer[3][nums.length];
-        dp[0][0] = nums[0];
-        if (nums[0] > 0) {
-            dp[2][0] = nums[0];
-        } else if (nums[0] < 0) {
-            dp[1][0] = nums[0];
-            dp[2][0] = 1;
-        } else {
-            dp[2][0] = 1;
-        }
-        for (int i = 1; i < nums.length; i++) {
+        int base = 1;
+        int max = nums[0];
+        for (int i = 0; i < nums.length; i++) {
+            base *= nums[i];
+            max = Math.max(max, base);
             if (nums[i] == 0) {
-                dp[0][i] = Integer.max(dp[0][i - 1], 0);
-                dp[2][i] = 1;
-            } else if (nums[i] > 0) {
-                dp[0][i] = Integer.max(dp[2][i - 1] * nums[i], dp[0][i - 1]);
-                if (dp[1][i - 1] != null) {
-                    dp[1][i] = dp[1][i - 1] * nums[i];
-                }
-                dp[2][i] = dp[2][i - 1] * nums[i];
-            } else {
-                if (dp[1][i - 1] != null) {
-                    dp[0][i] = Integer.max(dp[1][i - 1] * nums[i], dp[0][i - 1]);
-                    dp[1][i] = dp[2][i - 1] * nums[i];
-                    dp[2][i] = dp[1][i - 1] * nums[i];
-                } else {
-                    dp[0][i] = Integer.max(dp[0][i - 1], nums[0]);
-                    dp[1][i] = nums[i];
-                    dp[2][i] = 1;
-                }
-                dp[1][i] = dp[2][i - 1] * nums[i];
+                base = 1;
+            }
+        }
+        base = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            base *= nums[i];
+            max = Math.max(max, base);
+            if (nums[i] == 0) {
+                base = 1;
             }
         }
 
-        return dp[0][nums.length - 1];
+        return max;
     }
 }
 // @lc code=end
