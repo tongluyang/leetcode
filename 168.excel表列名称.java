@@ -54,7 +54,7 @@ class Solution {
         do {
             int remainder = (n - 1) % 26;
             n = (n - 1) / 26;
-            sb.insert(0, ((char) (remainder + 65)));
+            sb.insert(0, ((char) (remainder + 'A')));
         } while (n != 0);
 
         return sb.toString();
