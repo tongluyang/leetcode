@@ -35,28 +35,19 @@
 // @lc code=start
 class Solution {
     public int[] twoSum(int[] numbers, int target) {
-        int[] result = new int[2];
-        int half = target / 2;
-        int sep = -1;
-        for (int i = 1; i < numbers.length; i++) {
-            if (numbers[i - 1] <= half && numbers[i] >= half) {
-                sep = i;
-                break;
+        int low = 0;
+        int high = numbers.length - 1;
+        while (low < high) {
+            long sum = (long) numbers[low] + numbers[high];
+            if (sum == target) {
+                return new int[]{low + 1, high + 1};
+            } else if (sum < target) {
+                low++;
+            } else {
+                high--;
             }
         }
-        for (int i = 0; i <= sep; i++) {
-            for (int j = Math.max(sep, i + 1); j < numbers.length; j++) {
-                int sum = numbers[i] + numbers[j];
-                if (sum == target) {
-                    result[0] = i + 1;
-                    result[1] = j + 1;
-                    return result;
-                } else if (sum > target) {
-                    break;
-                }
-            }
-        }
-        return result;
+        return new int[]{0, 0};
     }
 }
 // @lc code=end
