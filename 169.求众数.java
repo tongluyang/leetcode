@@ -35,11 +35,15 @@ class Solution {
     public int majorityElement(int[] nums) {
         int m = 0;
         int max = Integer.MIN_VALUE;
+        int half = nums.length / 2;
         Map<Integer, Integer> map = new HashMap<>();
         for (int num : nums) {
             int count = map.getOrDefault(num, 0) + 1;
             if (count > max) {
                 m = num;
+                if (count > half) {
+                    return m;
+                }
                 max = count;
             }
             map.put(num, count);
