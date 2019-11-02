@@ -37,8 +37,15 @@ class Solution {
     public int[] twoSum(int[] numbers, int target) {
         int[] result = new int[2];
         int half = target / 2;
-        for (int i = 0; i < numbers.length - 1 && numbers[i] <= half; i++) {
-            for (int j = i + 1; j < numbers.length; j++) {
+        int sep = -1;
+        for (int i = 1; i < numbers.length; i++) {
+            if (numbers[i - 1] <= half && numbers[i] >= half) {
+                sep = i;
+                break;
+            }
+        }
+        for (int i = 0; i <= sep; i++) {
+            for (int j = Math.max(sep, i + 1); j < numbers.length; j++) {
                 int sum = numbers[i] + numbers[j];
                 if (sum == target) {
                     result[0] = i + 1;
