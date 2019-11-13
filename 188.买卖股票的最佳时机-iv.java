@@ -41,20 +41,14 @@
 class Solution {
     public int maxProfit(int k, int[] prices) {
         int max = 0;
-        if (k >= prices.length / 2) {//贪心
-            boolean exists = false;
-            for (int i = 0; i < prices.length; i++) {
-                if (!exists) {
-                    if (i < prices.length - 1 && prices[i + 1] > prices[i]) {//还有机会卖并且明天涨，那么今天买
-                        exists = true;
-                        max = max - prices[i];
-                    }
-                } else {
-                    if (i == prices.length - 1 || prices[i + 1] < prices[i]) {
-                        exists = false;
-                        max = max + prices[i];
-                    }
-                }
+        if (prices.length == 0) {
+            return max;
+        }
+        if (k >= prices.length / 2) {//等于不限次数
+            int buy = -prices[0];
+            for (int i = 1; i < prices.length; i++) {
+                buy = Math.max(max - prices[i], buy);
+                max = Math.max(buy + prices[i], max);
             }
             return max;
         }
