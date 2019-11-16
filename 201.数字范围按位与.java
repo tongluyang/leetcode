@@ -30,32 +30,16 @@
 // @lc code=start
 class Solution {
     public int rangeBitwiseAnd(int m, int n) {
-        int minus = n - m;
-        if (minus == 0) {
-            return m & n;
-        }
-        int h = 0;
-        for (int i = 1; i < 32; i++) {
-            if (m >> i == 0) {
-                if (n >> i != 0) {
-                    return 0;
-                }
-                h = i;
-                break;
+        int count = 0;
+        while (m != n) {
+            if (m == 0) {
+                return 0;
             }
+            m = m >> 1;
+            n = n >> 1;
+            count++;
         }
-        int l = 0;
-        for (int i = 1; i < 32; i++) {
-            if (minus >> i == 0) {
-                l = i;
-                break;
-            }
-        }
-        int tmp = 0;
-        for (int i = l; i < h; i++) {
-            tmp += 1 << i;
-        }
-        return m & n & tmp;
+        return m << count;
     }
 }
 // @lc code=end
