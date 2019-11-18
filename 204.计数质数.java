@@ -30,30 +30,29 @@ class Solution {
         if (n <= 2) {
             return 0;
         }
-        List<Integer> primes = new ArrayList<>();
-        primes.add(2);
-        for (int i = 3; i < n; i += 2) {
-            if (isPrimes(i, primes)) {
-                primes.add(i);
-            }
-        }
-        return primes.size();
-    }
-
-    private boolean isPrimes(int n, List<Integer> primes) {
-        if (n <= 2) {
-            return true;
-        }
+        boolean[] p = new boolean[n];
+        Arrays.fill(p, true);
+        int v = 2;
         double sqrt = Math.sqrt(n);
-        for (Integer prime : primes) {
-            if (prime > sqrt) {
-                return true;
+        while (v < sqrt) {
+            int multi = 2;
+            for (int i = v * 2; i < p.length; i = v * (multi++)) {
+                p[i] = false;
             }
-            if (n % prime == 0) {
-                return false;
+            for (int i = v + 1; i < p.length; i++) {
+                if (p[i]) {
+                    v = i;
+                    break;
+                }
             }
         }
-        return true;
+        int count = 0;
+        for (int i = 2; i < p.length; i++) {
+            if (p[i]) {
+                count++;
+            }
+        }
+        return count;
     }
 }
 // @lc code=end
