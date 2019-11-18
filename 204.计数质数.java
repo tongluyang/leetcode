@@ -32,17 +32,11 @@ class Solution {
         }
         boolean[] p = new boolean[n];
         Arrays.fill(p, true);
-        int v = 2;
         double sqrt = Math.sqrt(n);
-        while (v < sqrt) {
-            int multi = 2;
-            for (int i = v * 2; i < p.length; i = v * (multi++)) {
-                p[i] = false;
-            }
-            for (int i = v + 1; i < p.length; i++) {
-                if (p[i]) {
-                    v = i;
-                    break;
+        for (int i = 2; i < sqrt; i++) {
+            if (p[i]) {
+                for (int j = i * i; j < p.length; j+=i) {
+                    p[j] = false;
                 }
             }
         }
