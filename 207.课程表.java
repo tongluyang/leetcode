@@ -56,34 +56,39 @@ class Solution {
         if (prerequisites.length == 0) {
             return true;
         }
-        int[] status = new int[prerequisites.length];
-        for (int i = 0; i < prerequisites.length; i++) {
-            if (canFinish(prerequisites, i, status) == 3) {
+        boolean[][] matrix = new boolean[numCourses][numCourses];
+        for (int[] prerequisite : prerequisites) {
+            matrix[prerequisite[0]][prerequisite[1]] = true;
+        }
+
+        int[] status = new int[numCourses];
+        for (int i = 0; i < numCourses; i++) {
+            if (!canFinish(i, status, matrix)) {
                 return false;
             }
         }
         return true;
     }
 
-    private int canFinish(int[][] prerequisites, int i, int[] status) {
-        //status: 0 init 1 判断中 2 可以 3 不可以
+    private boolean canFinish(int i, int[] status, boolean[][] matrix) {
+        //status: 0 init 1 ing 2 ok
         if (status[i] == 1) {
-            return 3;
+            return false;
         }
-        if (status[i] != 0) {
-            return status[i];
+        if (status[i] == 2) {
+            return true;
         }
         status[i] = 1;
-        int[] pre = prerequisites[i];
-        for (int x = 1; x < pre.length; x++) {
-            for (int y = 0; y < prerequisites.length; y++) {
-                if (pre[x] == prerequisites[y][0] && canFinish(prerequisites, y, status) == 3) {
-                    return 3;
+        boolean[] req = matrix[i];
+        for (int x = 0; x < req.length; x++) {
+            if (req[x]) {
+                if (!canFinish(x, status, matrix)) {
+                    return false;
                 }
             }
         }
         status[i] = 2;
-        return 2;
+        return true;
     }
 }
 // @lc code=end
