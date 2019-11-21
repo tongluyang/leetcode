@@ -57,41 +57,34 @@ class Solution {
             return true;
         }
         Map<Integer, Set<Integer>> map = new HashMap<>();
+        int[] indegree = new int[numCourses];
         for (int[] prerequisite : prerequisites) {
-            Set<Integer> set = map.getOrDefault(prerequisite[0], new HashSet<>());
-            set.add(prerequisite[1]);
-            map.put(prerequisite[0], set);
+            Set<Integer> set = map.getOrDefault(prerequisite[1], new HashSet<>());
+            set.add(prerequisite[0]);
+            map.put(prerequisite[1], set);
+            indegree[prerequisite[0]]++;
         }
-
-        int[] status = new int[numCourses];
+        Queue<Integer> queue = new LinkedList<>();
         for (int i = 0; i < numCourses; i++) {
-            if (!canFinish(i, status, map)) {
-                return false;
+            if (indegree[i] == 0) {
+                queue.add(i);
             }
         }
-        return true;
-    }
-
-    private boolean canFinish(int i, int[] status, Map<Integer, Set<Integer>> map) {
-        if (map.get(i) == null) {
-            return true;
-        }
-        //status: 0 init 1 ing 2 ok
-        if (status[i] == 1) {
-            return false;
-        }
-        if (status[i] == 2) {
-            return true;
-        }
-        status[i] = 1;
-        Set<Integer> req = map.get(i);
-        for (Integer integer : req) {
-            if (!canFinish(integer, status, map)) {
-                return false;
+        while (!queue.isEmpty()) {
+            Integer pre = queue.poll();
+            numCourses--;
+            Set<Integer> set = map.get(pre);
+            if (set == null) {
+                continue;
+            }
+            for (Integer integer : set) {
+                indegree[integer]--;
+                if (indegree[integer] == 0) {
+                    queue.add(integer);
+                }
             }
         }
-        status[i] = 2;
-        return true;
+        return numCourses == 0;
     }
 }
 // @lc code=end
