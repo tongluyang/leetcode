@@ -56,21 +56,26 @@ class Solution {
         if (prerequisites.length == 0) {
             return true;
         }
-        boolean[][] matrix = new boolean[numCourses][numCourses];
+        Map<Integer, Set<Integer>> map = new HashMap<>();
         for (int[] prerequisite : prerequisites) {
-            matrix[prerequisite[0]][prerequisite[1]] = true;
+            Set<Integer> set = map.getOrDefault(prerequisite[0], new HashSet<>());
+            set.add(prerequisite[1]);
+            map.put(prerequisite[0], set);
         }
 
         int[] status = new int[numCourses];
         for (int i = 0; i < numCourses; i++) {
-            if (!canFinish(i, status, matrix)) {
+            if (!canFinish(i, status, map)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean canFinish(int i, int[] status, boolean[][] matrix) {
+    private boolean canFinish(int i, int[] status, Map<Integer, Set<Integer>> map) {
+        if (map.get(i) == null) {
+            return true;
+        }
         //status: 0 init 1 ing 2 ok
         if (status[i] == 1) {
             return false;
@@ -79,12 +84,10 @@ class Solution {
             return true;
         }
         status[i] = 1;
-        boolean[] req = matrix[i];
-        for (int x = 0; x < req.length; x++) {
-            if (req[x]) {
-                if (!canFinish(x, status, matrix)) {
-                    return false;
-                }
+        Set<Integer> req = map.get(i);
+        for (Integer integer : req) {
+            if (!canFinish(integer, status, map)) {
+                return false;
             }
         }
         status[i] = 2;
