@@ -57,39 +57,68 @@ class Solution {
         if (col == 0) {
             return result;
         }
+        Tire tire = new Tire();
         for (String word : words) {
-            next:
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    if (findWord(board, word.toCharArray(), 0, i, j)) {
-                        result.add(word);
-                        break next;
-                    }
-                }
+            tire.insert(word);
+        }
+
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                findWord(board, tire, "", i, j, set);
             }
         }
-        return result;
+        return new ArrayList<>(set);
     }
 
-    private boolean findWord(char[][] board, char[] word, int index, int i, int j) {
-        if (word.length == index) {
-            return true;
-        }
+
+    private void findWord(char[][] board, Tire tire, String parent, int i, int j, Set<String> set) {
         if (i < 0 || i == board.length || j < 0 || j == board[0].length) {
-            return false;
+            return;
         }
-        if (board[i][j] == word[index]) {
-            board[i][j] = '.';
-            if (findWord(board, word, index + 1, i + 1, j)
-                    || findWord(board, word, index + 1, i - 1, j)
-                    || findWord(board, word, index + 1, i, j + 1)
-                    || findWord(board, word, index + 1, i, j - 1)) {
-                board[i][j] = word[index];
-                return true;
+        if (tire.size == 0) {
+            return;
+        }
+        char c = board[i][j];
+        if (c == '.') {
+            return;
+        }
+        Tire child = tire.children[c - 'a'];
+        if (child != null) {
+            parent = parent + board[i][j];
+            if (child.end) {
+                set.add(parent);
             }
-            board[i][j] = word[index];
+            board[i][j] = '.';
+            findWord(board, child, parent, i + 1, j, set);
+            findWord(board, child, parent, i - 1, j, set);
+            findWord(board, child, parent, i, j + 1, set);
+            findWord(board, child, parent, i, j - 1, set);
+            board[i][j] = c;
         }
-        return false;
+    }
+
+    public static class Tire {
+        Tire[] children = new Tire[26];
+        boolean end;
+        int size = 0;
+        public void insert(String word) {
+            insert(word.toCharArray(), 0);
+        }
+
+        private void insert(char[] word, int index) {
+            if (word.length == index) {
+                end = true;
+                return;
+            }
+            Tire tire = children[word[index] - 'a'];
+            if (tire == null) {
+                tire = new Tire();
+                children[word[index] - 'a'] = tire;
+                size++;
+            }
+            tire.insert(word, index + 1);
+        }
     }
 }
 // @lc code=end
