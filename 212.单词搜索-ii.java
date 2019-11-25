@@ -85,9 +85,8 @@ class Solution {
         }
         Tire child = tire.children[c - 'a'];
         if (child != null) {
-            parent = parent + board[i][j];
             if (child.end) {
-                set.add(parent);
+                set.add(child.str);
             }
             board[i][j] = '.';
             findWord(board, child, parent, i + 1, j, set);
@@ -102,6 +101,7 @@ class Solution {
         Tire[] children = new Tire[26];
         boolean end;
         int size = 0;
+        String str = "";
         public void insert(String word) {
             insert(word.toCharArray(), 0);
         }
@@ -115,6 +115,7 @@ class Solution {
             if (tire == null) {
                 tire = new Tire();
                 children[word[index] - 'a'] = tire;
+                tire.str = new String(word, 0, index + 1);
                 size++;
             }
             tire.insert(word, index + 1);
