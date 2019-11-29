@@ -34,33 +34,21 @@ class Solution {
         if (s.length() <= 1) {
             return s;
         }
-        int mid = s.length() / 2;
-        StringBuilder sb = new StringBuilder(s);
-        for (int i = mid; i >= 0; i--) {
-            int offset = 0;
-            int flag = -1;//奇偶，-1未知 1奇数回文 0或2偶数回文
-            while (i - offset - 1 >= 0) {
-                if (flag != (s.length() % 2 + 1) && s.charAt(i + offset + s.length() % 2) == s.charAt(i - offset - 1)) {//偶数长度先偶数，奇数长度先奇数
-                    offset++;
-                    flag = s.length() % 2;
-                } else if (flag != (s.length() % 2) && (i + offset + (s.length() % 2 + 1) % 2 < s.length()) &&  s.charAt(i + offset + (s.length() % 2 + 1) % 2) == s.charAt(i - offset - 1)) {
-                    offset++;
-                    flag = s.length() % 2 + 1;
-                } else {
-                    break;
-                }
+        String r = new StringBuilder(s).reverse().toString();
+        String tmp = s + "#" + r;
+        int[] f = new int[tmp.length()];
+        int t;
+        for (int i = 1; i < tmp.length(); i++) {
+            t = f[i - 1];
+            while (t > 0 && tmp.charAt(i) != tmp.charAt(t)) {
+                t = f[t - 1];
             }
-            if (i - offset - 1 == -1) {//前指针到第一个字符前
-                if (i == 0) {//没有回文，以第一个字符为中心，预备奇数回文
-                    flag = 1;
-                }
-                while (i + offset - 1 + (flag == 1 ? 1 : 0) < s.length() - 1) {
-                    sb.insert(0, s.charAt(i + offset++ + (flag == 1 ? 1 : 0)));
-                }
-                break;
+            if (tmp.charAt(i) == tmp.charAt(t)) {
+                t++;
             }
+            f[i] = t;
         }
-        return sb.toString();
+        return new StringBuffer(s.substring(f[tmp.length() - 1])).reverse().append(s).toString();
     }
 }
 // @lc code=end
