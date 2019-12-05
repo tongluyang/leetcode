@@ -37,16 +37,15 @@
 class Solution {
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         Set<Integer> set = new HashSet<>();
-        Queue<Integer> queue = new LinkedList<>();
-        for (int num : nums) {
-            if (set.size() > k) {
-                set.remove(queue.poll());
-            }
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
             if (set.contains(num)) {
                 return true;
             }
-            queue.add(num);
             set.add(num);
+            if (set.size() > k) {
+                set.remove(nums[i - k]);
+            }
         }
         return false;
     }
