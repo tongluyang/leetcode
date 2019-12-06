@@ -36,23 +36,36 @@
 // @lc code=start
 class Solution {
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
-        TreeSet<Integer> set = new TreeSet<>();
+        if (t < 0) {
+            return false;
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        int w = t + 1;
         for (int i = 0; i < nums.length; i++) {
             int num = nums[i];
-            Integer g = set.ceiling(num);
-            if (g != null && Long.valueOf(g) - num <= t) {
+            int id = getId(num, w);
+            if (map.get(id) != null) {
                 return true;
             }
-            Integer l = set.floor(num);
-            if (l != null && num - Long.valueOf(l) <= t) {
+            if (map.get(id - 1) != null && num - Long.valueOf(map.get(id - 1)) <= t) {
                 return true;
             }
-            set.add(num);
-            if (set.size() > k) {
-                set.remove(nums[i - k]);
+            if (map.get(id + 1) != null && Long.valueOf(map.get(id + 1)) - num <= t) {
+                return true;
+            }
+            map.put(id, num);
+            if (map.size() > k) {
+                map.remove(getId(nums[i - k], w));
             }
         }
         return false;
+    }
+
+    private int getId(int value, int w) {
+        if (value >= 0) {
+            return value / w;
+        }
+        return (value + 1) / w - 1;
     }
 }
 // @lc code=end
