@@ -46,28 +46,26 @@
 class Solution {
     public int calculate(String s) {
         char[] chars = s.toCharArray();
-        Stack<Integer> stack = new Stack<>();
-        boolean push = true;
+        Stack<Integer> stack = new Stack<>();//括号外
+        int sign = 1;//实际
+        stack.push(1);
         int cur = 0;
+        int result = 0;
         for (int i = 0; i < chars.length; i++) {
             switch (chars[i]) {
                 case '(':
-                    push = true;
+                    stack.push(sign);
                     break;
                 case ' ':
                     break;
                 case '+':
-                    stack.push(1);
+                    sign = stack.peek();
                     break;
                 case '-':
-                    stack.push(-1);
+                    sign = -1 * stack.peek();
                     break;
                 case ')':
-                    cur = stack.pop();
-                    if (!stack.isEmpty()) {
-                        cur = cur * stack.pop() + stack.pop();
-                    }
-                    stack.push(cur);
+                    stack.pop();
                     break;
                 default:
                     cur = 0;
@@ -76,15 +74,10 @@ class Solution {
                         i++;
                     }
                     i--;//多走了一步
-                    if (push) {
-                        push = false;
-                    } else {
-                        cur = cur * stack.pop() + stack.pop();
-                    }
-                    stack.push(cur);
+                    result += cur * sign;
             }
         }
-        return stack.pop();
+        return result;
     }
 }
 // @lc code=end
