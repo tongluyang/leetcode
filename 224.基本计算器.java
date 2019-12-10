@@ -70,13 +70,12 @@ class Solution {
                     stack.push(cur);
                     break;
                 default:
-                    StringBuilder curStr = new StringBuilder();
+                    cur = 0;
                     while (i < chars.length && chars[i] >= '0' && chars[i] <= '9') {
-                        curStr.append(chars[i]);
+                        cur = cur * 10 + chars[i] - '0';
                         i++;
                     }
                     i--;//多走了一步
-                    cur = Integer.parseInt(curStr.toString());
                     if (push) {
                         push = false;
                     } else {
