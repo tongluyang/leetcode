@@ -33,16 +33,16 @@
 class Solution {
     public List<Integer> majorityElement(int[] nums) {
         List<Integer> result = new ArrayList<>();
-        Integer a = null;
-        Integer b = null;
+        int a = 0;
+        int b = 0;
         int ac = 0;
         int bc = 0;
         for (int num : nums) {
-            if (a != null && a == num) {
+            if (a == num) {
                 ac++;
                 continue;
             }
-            if (b != null && b == num) {
+            if (b == num) {
                 bc++;
                 continue;
             }
