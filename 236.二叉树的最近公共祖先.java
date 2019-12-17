@@ -60,46 +60,22 @@
  * }
  */
 class Solution {
-    TreeNode target = null;
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null) {
             return null;
         }
-        if (root.val == p.val) {//根节点是其中一个
-            if (find(root.left, q) || find(root.right, q)) {//子节点中找到另外一个
-                return root;//当前节点就是公共祖先
-            }
-            target = q;//另外的查找目标
-            return null;
-        }
-        if (root.val == q.val) {
-            if (find(root.left, p) || find(root.right, p)) {
-                return root;
-            }
-            target = p;
-            return null;
-        }
-        TreeNode node = lowestCommonAncestor(root.left, p, q);
-        if (node != null) {//公共祖先已经在下面找到了
-            return node;
-        }
-        if (target != null && find(root.right, target)) {
+        if (root == p || root == q) {//找到一个节点，如果是外部调用的，这个节点就是最近公共祖先，如果是内部递归调的，后续再判断
             return root;
         }
-        return lowestCommonAncestor(root.right, p, q);
-    }
-    
-    private boolean find(TreeNode root, TreeNode target) {
-        if (root == null) {
-            return false;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);//找左边看能不能找到一个
+        TreeNode right = lowestCommonAncestor(root.right, p, q);//找右边看能不能找到一个
+        if (left != null && right != null) {//两边都找到一个，那当前节点是最近公共祖先
+            return root;
         }
-        if (root == target) {
-            return true;
+        if (left != null) {//只在一边找到了，那这个节点可能是最近公共祖先，也可能是一个节点，如果其他地方没找到，那这个就是最近公共祖先
+            return left;
         }
-        if (find(root.left, target)) {
-            return true;
-        }
-        return find(root.right, target);
+        return right;//同上
     }
 }
 // @lc code=end
