@@ -41,11 +41,11 @@
  * }
  */
 class Solution {
-    boolean odd;
-    ListNode cur;
     public boolean isPalindrome(ListNode head) {
         ListNode f = head;
         ListNode s = head;
+        ListNode pre = head;
+        boolean odd;
         while (true) {
             if (f == null) {
                 odd = false;
@@ -55,25 +55,27 @@ class Solution {
                 break;
             }
             f = f.next.next;
+            ListNode cur = s;
+            s = s.next;
+            if (cur != head) {
+                pre.next = s;
+                cur.next = head;
+                head = cur;
+            }
+        }
+        if (odd) {
             s = s.next;
         }
-        cur = s;
-        return isReverse(head);
-    }
-
-    private boolean isReverse(ListNode head) {
-        if (head == cur) {
-            if (odd) {
-                cur = cur.next;
+        while (true) {
+            if (s == null) {
+                return true;
             }
-            return true;
+            if (head.val != s.val) {
+                return false;
+            }
+            head = head.next;
+            s = s.next;
         }
-        if (isReverse(head.next)) {
-            final boolean b = head.val == cur.val;
-            cur = cur.next;
-            return b;
-        }
-        return false;
     }
 }
 // @lc code=end
