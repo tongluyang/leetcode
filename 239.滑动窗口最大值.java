@@ -58,6 +58,9 @@ class Solution {
         int[] result = new int[nums.length - k + 1];
         ArrayDeque<Integer> deq = new ArrayDeque<>();
         for (int i = 0; i < nums.length; i++) {
+            if (!deq.isEmpty() && nums[deq.getFirst()] < nums[i]) {
+                deq.clear();
+            }
             while (!deq.isEmpty() && nums[deq.getLast()] < nums[i]) {
                 deq.removeLast();
             }
