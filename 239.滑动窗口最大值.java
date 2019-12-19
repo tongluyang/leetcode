@@ -55,21 +55,25 @@ class Solution {
         if (nums.length == 0) {
             return new int[0];
         }
+        if (k == 1) {
+            return nums;
+        }
         int[] result = new int[nums.length - k + 1];
-        ArrayDeque<Integer> deq = new ArrayDeque<>();
+        int[] left = new int[k];
+        int[] right = new int[k - 1];
         for (int i = 0; i < nums.length; i++) {
-            if (!deq.isEmpty() && nums[deq.getFirst()] < nums[i]) {
-                deq.clear();
+            if (i % k == 0) {
+                left[0] = nums[i];
+                if (i > 0 && i < nums.length - 1) {//第一组和最后一组不需要right
+                    for (int x = 1; x < k; x++) {
+                        right[k - 1 - x] = x == 1 ? nums[i - x] : Math.max(nums[i - x], right[k - x]);
+                    }
+                }
+            } else {
+                left[i % k] = Math.max(left[(i % k) - 1], nums[i]);
             }
-            while (!deq.isEmpty() && nums[deq.getLast()] < nums[i]) {
-                deq.removeLast();
-            }
-            if (!deq.isEmpty() && deq.getFirst() == i - k) {
-                deq.removeFirst();
-            }
-            deq.add(i);
             if (i >= k - 1) {
-                result[i - (k - 1)] = nums[deq.getFirst()];
+                result[i - (k - 1)] = i % k == k - 1 ? left[k - 1] : Math.max(left[i % k], right[i % k]);
             }
         }
         return result;
