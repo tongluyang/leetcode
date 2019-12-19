@@ -56,20 +56,18 @@ class Solution {
             return new int[0];
         }
         int[] result = new int[nums.length - k + 1];
-        int start = 0;
-        int end = start + k - 1;
-        PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> b - a);
-        for (int i = 0; i < k - 1; i++) {
-            queue.add(nums[i]);
-        }
-        for (int i = 0; i < result.length; i++) {
-            if (start > 0) {
-                queue.remove(nums[start - 1]);
+        ArrayDeque<Integer> deq = new ArrayDeque<>();
+        for (int i = 0; i < nums.length; i++) {
+            while (!deq.isEmpty() && nums[deq.getLast()] < nums[i]) {
+                deq.removeLast();
             }
-            queue.add(nums[end]);
-            result[i] = queue.peek();
-            start++;
-            end++;
+            if (!deq.isEmpty() && deq.getFirst() == i - k) {
+                deq.removeFirst();
+            }
+            deq.add(i);
+            if (i >= k - 1) {
+                result[i - (k - 1)] = nums[deq.getFirst()];
+            }
         }
         return result;
     }
