@@ -37,15 +37,18 @@
 // @lc code=start
 class Solution {
     public boolean isAnagram(String s, String t) {
-        Map<Character, Integer> map = new HashMap<>();
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int[] arr = new int[26];
         for (char c : s.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
+            arr[c - 'a']++;
         }
         for (char c : t.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) - 1);
+            arr[c - 'a']--;
         }
-        for (Integer value : map.values()) {
-            if (value != 0) {
+        for (int i : arr) {
+            if (i != 0) {
                 return false;
             }
         }
