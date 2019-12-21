@@ -42,39 +42,28 @@
 // @lc code=start
 class Solution {
     public boolean searchMatrix(int[][] matrix, int target) {
-        final int row = matrix.length;
+        int row = matrix.length;
         if (row == 0) {
             return false;
         }
-        final int col = matrix[0].length;
+        int col = matrix[0].length;
         if (col == 0) {
             return false;
         }
-        return searchMatrix(matrix, target, 0, 0, row - 1, col - 1);
-    }
-
-    public boolean searchMatrix(int[][] matrix, int target, int minI, int minJ, int maxI, int maxJ) {
-        if (minI > maxI || minJ > maxJ) {
-            return false;
+        int i = row - 1;
+        int j = 0;
+        while (i >= 0 && j < col) {
+            int num = matrix[i][j];
+            if (num == target) {
+                return true;
+            }
+            if (target > num) {//目标在右边
+                j++;
+            } else {//目标在上边
+                i--;
+            }
         }
-        if (minI == maxI && minJ == maxJ) {
-            return matrix[minI][minJ] == target;
-        }
-
-        int midI = (minI + maxI) >>> 1;
-        int midJ = (minJ + maxJ) >>> 1;
-
-        //向右下，中心
-        if (matrix[midI][midJ] == target) {
-            return true;
-        }
-        if (target > matrix[midI][midJ]) {//目标比中心点大，左上角不用考虑了
-            return searchMatrix(matrix, target, midI + 1, minJ, maxI, maxJ) //下
-                    || searchMatrix(matrix, target, minI, midJ + 1, midI, maxJ); //右
-        } else {//目标比中心点小，右下角不用考虑了
-            return searchMatrix(matrix, target, minI, minJ, midI - 1, maxJ) //上
-                    || searchMatrix(matrix, target, midI, minJ, maxI, midJ - 1); //左
-        }
+        return false;
     }
 }
 // @lc code=end
