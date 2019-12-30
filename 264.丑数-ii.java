@@ -44,41 +44,17 @@ class Solution {
         int p3 = 0;
         int p5 = 0;
         for (int i = 1; i < n; i++) {
-            int u2;
-            int u3;
-            int u5;
-            while (true) {
-                u2 = res[p2] * 2;
-                if (u2 <= res[i - 1]) {
-                    p2++;
-                } else {
-                    break;
-                }
-            }
-            while (true) {
-                u3 = res[p3] * 3;
-                if (u3 <= res[i - 1]) {
-                    p3++;
-                } else {
-                    break;
-                }
-            }
-            while (true) {
-                u5 = res[p5] * 5;
-                if (u5 <= res[i - 1]) {
-                    p5++;
-                } else {
-                    break;
-                }
-            }
-            if (u2 <= u3 && u2 <= u5) {
-                res[i] = u2;
+            int u2 = res[p2] * 2;
+            int u3 = res[p3] * 3;
+            int u5 = res[p5] * 5;
+            res[i] = Math.min(u2, Math.min(u3, u5));
+            while (res[p2] * 2 <= res[i]) {
                 p2++;
-            } else if (u3 <= u2 && u3 <= u5) {
-                res[i] = u3;
+            }
+            while (res[p3] * 3 <= res[i]) {
                 p3++;
-            } else {
-                res[i] = u5;
+            }
+            while (res[p5] * 5 <= res[i]) {
                 p5++;
             }
         }
