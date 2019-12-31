@@ -39,23 +39,17 @@
 
 public class Solution extends VersionControl {
     public int firstBadVersion(int n) {
-        boolean isBad = true;
         int start = 1;
         int end = n;
-        int result = 0;
-        while (start <= end) {
-            result = (start + end) >>> 1;
-            isBad = isBadVersion(result);
-            if (start == end) {
-                return isBad ? result : result + 1;
-            }
-            if (isBad) {
-                end = result - 1;
+        while (start < end) {
+            int mid = (start + end) >>> 1;
+            if (isBadVersion(mid)) {
+                end = mid;
             } else {
-                start = result + 1;
+                start = mid + 1;
             }
         }
-        return result;
+        return start;
     }
 }
 // @lc code=end
