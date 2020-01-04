@@ -31,11 +31,10 @@
 
 // @lc code=start
 class Solution {
-    public int numSquares(int n) {
-        return numSquares(n, new HashMap<>());
-    }
 
-    private int numSquares(int n, Map<Integer, Integer> mem) {
+    private static Map<Integer, Integer> mem = new HashMap<>();
+
+    public int numSquares(int n) {
         if (n == 0) {
             return 0;
         }
@@ -46,15 +45,16 @@ class Solution {
         int min = Integer.MAX_VALUE;
         for (int i = s; i > 0; i--) {
             int rem = n - i * i;
-            final int num = numSquares(rem, mem);
+            final int num = numSquares(rem);
             mem.put(rem, num);
-            min = Math.min(min, num + 1);
-            if (min == 1) {
-                return min;
+            if (num == 0) {
+                return 1;
             }
+            min = Math.min(min, num + 1);
         }
         return min;
     }
+
 }
 // @lc code=end
 
