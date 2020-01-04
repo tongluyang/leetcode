@@ -31,30 +31,16 @@
 
 // @lc code=start
 class Solution {
-
-    private static Map<Integer, Integer> mem = new HashMap<>();
-
     public int numSquares(int n) {
-        if (n == 0) {
-            return 0;
-        }
-        if (mem.get(n) != null) {
-            return mem.get(n);
-        }
-        final int s = new Double(Math.floor(Math.sqrt(n))).intValue();
-        int min = Integer.MAX_VALUE;
-        for (int i = s; i > 0; i--) {
-            int rem = n - i * i;
-            final int num = numSquares(rem);
-            mem.put(rem, num);
-            if (num == 0) {
-                return 1;
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            dp[i] = i;
+            for (int j = 1; i - j * j >= 0; j++) {
+                dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
             }
-            min = Math.min(min, num + 1);
         }
-        return min;
+        return dp[n];
     }
-
 }
 // @lc code=end
 
