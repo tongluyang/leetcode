@@ -42,14 +42,22 @@
 // @lc code=start
 class Solution {
     public int findDuplicate(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i + 1; j < nums.length; j++) {
-                if (nums[i] == nums[j]) {
-                    return nums[i];
+        int ps = 0;
+        int pf = 0;
+
+        while (true) {
+            ps = nums[ps];
+            pf = nums[nums[pf]];
+
+            if (ps == pf) {
+                pf = 0;
+                while (nums[ps] != nums[pf]) {
+                    ps = nums[ps];
+                    pf = nums[pf];
                 }
+                return nums[ps];
             }
         }
-        return 0;
     }
 }
 // @lc code=end
