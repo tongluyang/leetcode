@@ -38,17 +38,23 @@ class Solution {
         if (nums.length == 0) {
             return 0;
         }
-        int max = 1;
-        int[] dp = new int[nums.length];
-        dp[0] = 1;
-        for (int i = 1; i < nums.length; i++) {
-            dp[i] = 1;
-            for (int j = 0; j < i; j++) {
-                if (nums[i] > nums[j]) {
-                    dp[i] = Math.max(dp[j] + 1, dp[i]);
+        int max = 0;
+        int[] tails = new int[nums.length];
+        for (int num : nums) {
+            int i = 0;
+            int j = max;
+            while (i < j) {
+                int m = (i + j) / 2;
+                if (num > tails[m]) {
+                    i = m + 1;
+                } else {
+                    j = m;
                 }
             }
-            max = Math.max(dp[i], max);
+            if (j == max) {
+                max++;
+            }
+            tails[i] = num;
         }
         return max;
     }
