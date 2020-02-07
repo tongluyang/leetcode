@@ -37,16 +37,20 @@
 class NumArray {
 
     int[] nums;
+    int[] sums;
     public NumArray(int[] nums) {
         this.nums = nums;
+        this.sums = new int[nums.length];
+        
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            sums[i] = sum;
+        }
     }
     
     public int sumRange(int i, int j) {
-        int sum = 0;
-        for (; i <= j; i++) {
-            sum += nums[i];
-        }
-        return sum;
+        return i == 0 ? sums[j] : sums[j] - sums[i - 1];
     }
 }
 
