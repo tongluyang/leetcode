@@ -36,10 +36,8 @@
 // @lc code=start
 class NumArray {
 
-    int[] nums;
     int[] sums;
     public NumArray(int[] nums) {
-        this.nums = nums;
         this.sums = new int[nums.length];
         
         int sum = 0;
