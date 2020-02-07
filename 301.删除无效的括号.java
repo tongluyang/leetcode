@@ -39,50 +39,21 @@
 // @lc code=start
 class Solution {
     public List<String> removeInvalidParentheses(String s) {
-        s = prepare(s);
-        if (isValid(s)) {
-            return Collections.singletonList(s);
-        }
-        Set<String> set = new HashSet<>();
-        Queue<String> queue = new LinkedList<>();
-        queue.add(s);
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            boolean exists = false;
-            for (int x = 0; x < size; x++) {
-                String str = queue.poll();
-                for (int i = 0; i < str.length(); i++) {
-                    if (str.charAt(i) != '(' && str.charAt(i) != ')') {
-                        continue;
-                    }
-                    if (i > 0 && str.charAt(i) == str.charAt(i - 1)) {
-                        continue;
-                    }
-                    String newStr = str.substring(0, i) + str.substring(i + 1, str.length());
-                    if (!newStr.equals(prepare(newStr))) {
-                        continue;
-                    }
-                    boolean valid = isValid(newStr);
-                    exists = exists || valid;
-                    if (valid) {
-                        set.add(newStr);
-                    }
-                    if (!queue.contains(newStr)) {
-                        queue.add(newStr);
-                    }
-                }
-            }
-            if (exists) {
-                break;
-            }
-        }
-        if (set.size() == 0) {
-            return Collections.singletonList("");
-        }
-        return new ArrayList<>(set);
+        int[] count = getDeleteCount(s);
+        List<String> strings = new ArrayList<>(removeInvalidParentheses(s, count[0], count[1], new HashSet<>()));
+        return strings.size() == 0 ? Collections.singletonList("") : strings;
     }
 
-    private String prepare(String s) {
+    public Set<String> removeInvalidParentheses(String s, int left, int right, Set<String> mem) {
+        if (left == 0 && right == 0) {
+            if (isValid(s)) {
+                return Collections.singleton(s);
+            }
+            return Collections.emptySet();
+        }
+
+        //先预处理一下，)开头的或(结尾的，肯定要删除
+        int originLength = s.length();
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == '(') {
                 break;
@@ -90,6 +61,10 @@ class Solution {
             if (s.charAt(i) == ')') {
                 s = s.substring(0, i) + s.substring(i + 1, s.length());
                 i--;
+                right--;
+                if (right < 0) {
+                    return Collections.emptySet();
+                }
             }
         }
         for (int i = s.length() - 1; i >= 0; i--) {
@@ -98,9 +73,58 @@ class Solution {
             }
             if (s.charAt(i) == '(') {
                 s = s.substring(0, i) + s.substring(i + 1, s.length());
+                left--;
+                if (left < 0) {
+                    return Collections.emptySet();
+                }
             }
         }
-        return s;
+        if (s.length() != originLength) { //如果预处理删除了一部分，判断预处理后的结果是不是符合要求
+            return removeInvalidParentheses(s, left, right, mem);
+        }
+
+        Set<String> result = new HashSet<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (i > 0 && c == s.charAt(i - 1)) {
+                continue;
+            }
+            if (c == '(' || c == ')') {
+                if ((left == 0 && c == '(') || (right == 0 && c == ')')) {
+                    continue;
+                }
+                String newStr = s.substring(0, i) + s.substring(i + 1, s.length());
+                if (mem.contains(newStr)) {
+                    continue;
+                } else {
+                    mem.add(newStr);
+                }
+                Set<String> res;
+                if (c == '(') {
+                    res = removeInvalidParentheses(newStr, left - 1, right, mem);
+                } else {
+                    res = removeInvalidParentheses(newStr, left, right - 1, mem);
+                }
+                result.addAll(res);
+            }
+        }
+        return result;
+    }
+
+    private int[] getDeleteCount(String s) {
+        int[] res = new int[2];
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                res[0]++;
+            } else if (c == ')') {
+                if (res[0] == 0) {
+                    res[1]++;
+                } else {
+                    res[0]--;
+                }
+            }
+        }
+        return res;
     }
 
     private boolean isValid(String s) {
