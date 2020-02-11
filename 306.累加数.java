@@ -42,48 +42,41 @@
 // @lc code=start
 class Solution {
     public boolean isAdditiveNumber(String num) {
-        return isAdditiveNumber(num, 0, 1, 1);
+        int i = 0;
+        for (int j = i + 1; j <= num.length() - 2; j++) {
+            for (int k = j + 1; k <= num.length() - 1; k++) {
+                if (isAdditiveNumber(num, i, j, k)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    private boolean isAdditiveNumber(String num, int start, int length1, int length2) {
-        if (start > 0 && start + length1 + length2 == num.length()) {
+    private boolean isAdditiveNumber(String num, int i, int j, int k) {
+        if (i > 0 && k == num.length()) {
             return true;
         }
-        if (start > num.length() - 3 || length1 > num.length() / 2 || length2 > num.length() / 2) {
+        if (num.charAt(j) == '0' && k - j > 1) { //0开头且不为0的数
             return false;
         }
-        int resultLength = check(num, start, length1, length2);
-        if (resultLength > 0 && isAdditiveNumber(num, start + length1, length2, resultLength)) {
-            return true;
+        int flag = 0;
+        int maxLen = Math.max(j - i, k - j);
+        StringBuilder sum = new StringBuilder();
+        for (int x = 1; x <= maxLen; x++) {
+            int n1 = j - x < i ? 0 : num.charAt(j - x) - '0';
+            int n2 = k - x < j ? 0 : num.charAt(k - x) - '0';
+            sum.insert(0, (n1 + n2 + flag) % 10);
+            flag = (n1 + n2 + flag) / 10;
         }
-        if (start > 0) {
-            return false;
+        if (flag != 0) {
+            sum.insert(0, 1);
         }
-        if (isAdditiveNumber(num, start, length1, length2 + 1)) {
-            return true;
-        }
-        return isAdditiveNumber(num, start, length1 + 1, length2);
-    }
 
-    private int check(String num, int start, int length1, int length2) {
-        if (start + length1 + length2 >= num.length()) {
-            return 0;
+        if (k + sum.length() <= num.length() && sum.toString().equals(num.substring(k, k + sum.length()))) {
+            return isAdditiveNumber(num, j, k, k + sum.length());
         }
-        String numStr1 = num.substring(start, start + length1);
-        if (numStr1.startsWith("0") && !numStr1.equals("0")) {
-            return 0;
-        }
-        long num1 = Long.parseLong(numStr1);
-        String numStr2 = num.substring(start + length1, start + length1 + length2);
-        if (numStr2.startsWith("0") && !numStr2.equals("0")) {
-            return 0;
-        }
-        long num2 = Long.parseLong(numStr2);
-
-        if (num.indexOf((num1 + num2) + "", start + length1 + length2) == start + length1 + length2) {
-            return ((num1 + num2) + "").length();
-        }
-        return 0;
+        return false;
     }
 }
 // @lc code=end
