@@ -78,19 +78,26 @@ class Solution {
         }
 
         Queue<Integer> queue = new LinkedList<>();
-        while (path.size() > 2) {
-
-            for (Integer key : path.keySet()) {
-                final List<Integer> connected = path.get(key);
-                if (connected.size() == 1) {
-                    queue.add(key);
-                }
+        for (Integer key : path.keySet()) {
+            final List<Integer> connected = path.get(key);
+            if (connected.size() == 1) {
+                queue.add(key);
             }
-
-            while (!queue.isEmpty()) {
-                final Integer key = queue.poll();
-                path.get(path.get(key).get(0)).remove(key);
-                path.remove(key);
+        }
+        while (!queue.isEmpty()) {
+            if (path.size() <= 2) {
+                break;
+            }
+            final int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                final Integer leaf = queue.poll();
+                final Integer leafNext = path.get(leaf).get(0);
+                final List<Integer> nextNexts = path.get(leafNext);
+                nextNexts.remove(leaf);
+                path.remove(leaf);
+                if (nextNexts.size() == 1) {
+                    queue.add(leafNext);
+                }
             }
         }
 
