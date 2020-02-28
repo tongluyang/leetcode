@@ -40,23 +40,21 @@
 // @lc code=start
 class Solution {
     public int maxCoins(int[] nums) {
-        return maxCoins(nums, -1, nums.length, new int[nums.length + 1][nums.length + 1]);
-    }
-
-    private int maxCoins(int[] nums, int begin, int end, int[][] cache) {
-        if (end - begin == 1) {
-            return 0;
+        int[][] dp = new int[nums.length + 1][nums.length + 1];
+        for (int begin = nums.length - 2; begin >= -1; begin--) {
+            for (int end = begin + 2; end <= nums.length; end++) {
+                int max = 0;
+                for (int k = begin + 1; k < end; k++) {
+                    int val = dp[begin + 1][k] + dp[k + 1][end] + 
+                        (begin < 0 ? 1 : nums[begin]) * nums[k] * (end >= nums.length ? 1 : nums[end]);
+                    if (max < val) {
+                        max = val;
+                    }
+                }
+                dp[begin + 1][end] = max;
+            }
         }
-        if (cache[begin + 1][end] != 0) {
-            return cache[begin + 1][end];
-        }
-        int max = 0;
-        for (int k = begin + 1; k < end; k++) {
-            max = Math.max(max,
-                    maxCoins(nums, begin, k, cache) + maxCoins(nums, k, end, cache) + (begin < 0 ? 1 : nums[begin]) * nums[k] * (end >= nums.length ? 1 : nums[end]));
-        }
-        cache[begin + 1][end] = max;
-        return max;
+        return dp[0][nums.length];
     }
 }
 // @lc code=end
