@@ -35,28 +35,20 @@
 // @lc code=start
 class Solution {
     public int coinChange(int[] coins, int amount) {
-        return coinChange(coins, amount, new int[amount + 1]);
-    }
-
-    public int coinChange(int[] coins, int amount, int[] mem) {
-        if (amount == 0) {
-            return 0;
-        }
-        if (amount < 0) {
-            return -1;
-        }
-        if (mem[amount] != 0) {
-            return mem[amount];
-        }
-        int min = -1;
-        for (int i = 0; i < coins.length; i++) {
-            int count = coinChange(coins, amount - coins[i], mem) + 1;
-            if (count != 0 && (min == -1 || count < min)) {
-                min = count;
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, -1);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (i - coin < 0 || dp[i - coin] == -1) {
+                    continue;
+                }
+                if (dp[i] == -1 || dp[i] > dp[i - coin] + 1) {
+                    dp[i] = dp[i - coin] + 1;
+                }
             }
         }
-        mem[amount] = min;
-        return min;
+        return dp[amount];
     }
 }
 // @lc code=end
