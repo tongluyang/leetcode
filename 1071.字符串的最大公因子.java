@@ -52,49 +52,20 @@
 // @lc code=start
 class Solution {
     public String gcdOfStrings(String str1, String str2) {
-        int minLen = Math.min(str1.length(), str2.length());
-        char[] gcdChars = new char[minLen];
-        int count = 0;
-        int p = 0;
-        while (p < minLen) {
-            char c1 = str1.charAt(p);
-            char c2 = str2.charAt(p);
-            if (c1 != c2) {
-                break;
-            }
-            gcdChars[p] = c1;
-            p++;
-            count++;
-        }
-        if (count == 0) {
+        if (!(str1 + str2).equals(str2 + str1)) {
             return "";
         }
-        // gcdChars目前为最长公共前缀
-        while (!check(str1, gcdChars, count) || !check(str2, gcdChars, count)) {
-            count--;
-            if (count == 0) {
-                return "";
-            }
-        }
-        return new String(gcdChars, 0, count);
+        return str1.substring(0, gcd(str1.length(), str2.length()));
     }
-
-    private boolean check(String str, char[] chars, int length) {
-        if (str.length() % length != 0) {
-            return false;
+    
+    private int gcd(int m, int n) {
+        int result;
+        while (n != 0) {
+            result = m % n;
+            m = n;
+            n = result;
         }
-        int count = 1;
-        int offset = length;
-        while (offset < str.length()) {
-            for (int i = 0; i < length; i++) {
-                if (str.charAt(offset + i) != chars[i]) {
-                    return false;
-                }
-            }
-            count++;
-            offset = length * count;
-        }
-        return true;
+        return m;
     }
 }
 // @lc code=end
