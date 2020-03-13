@@ -33,23 +33,19 @@
 // @lc code=start
 class Solution {
     public int majorityElement(int[] nums) {
-        int m = 0;
-        int max = Integer.MIN_VALUE;
-        int half = nums.length / 2;
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int num : nums) {
-            int count = map.getOrDefault(num, 0) + 1;
-            if (count > max) {
-                m = num;
-                if (count > half) {
-                    return m;
-                }
-                max = count;
+        int result = nums[0];
+        int count = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (count == 0) {
+                result = nums[i];
             }
-            map.put(num, count);
+            if (result == nums[i]) {
+                count++;
+            } else {
+                count--;
+            }
         }
-
-        return m;
+        return result;
     }
 }
 // @lc code=end
