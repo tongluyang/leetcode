@@ -88,17 +88,11 @@
 // @lc code=start
 class Solution {
     public int[] maxDepthAfterSplit(String seq) {
-        int[] ans = new int[seq.length()];
-        int depth = 0;
-        for (int i = 0; i < seq.length(); i++) {
-            char c = seq.charAt(i);
-            if (c == '(') {
-                depth++;
-                ans[i] = depth % 2;
-            } else {
-                ans[i] = depth % 2;
-                depth--;
-            }
+        int len = seq.length();
+        int[] ans = new int[len];
+        char[] chars = seq.toCharArray();
+        for (int i = 0; i < len; i++) {
+            ans[i] = chars[i] == '(' ? i & 1 : (1 - i & 1);
         }
         return ans;
     }
