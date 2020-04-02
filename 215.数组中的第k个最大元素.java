@@ -38,10 +38,13 @@ class Solution {
         return findKthLargest(nums, k, 0, nums.length - 1);
     }
 
+    Random random = new Random();
+
     private int findKthLargest(int[] nums, int k, int start, int end) {
         if (start == end) {
             return nums[start];
         }
+        swap(nums, start, random.nextInt(end - start + 1) + start);
         int p = nums[start];
         int l = start;
         int r = end;
@@ -52,13 +55,9 @@ class Solution {
             while (nums[l] <= p && r > l) {
                 l++;
             }
-            int tmp = nums[r];
-            nums[r] = nums[l];
-            nums[l] = tmp;
+            swap(nums, l, r);
         }
-        int tmp = nums[r];
-        nums[r] = p;
-        nums[start] = tmp;
+        swap(nums, start, r);
 
         int rightLen = end - r;
         if (k == rightLen + 1) {//左边数组第一个，也就是最大值，也就是分界数
@@ -70,6 +69,12 @@ class Solution {
         } else {
             return findKthLargest(nums, k - rightLen - 1, start, r - 1);
         }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
     }
 }
 // @lc code=end
