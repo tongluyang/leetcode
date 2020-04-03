@@ -68,39 +68,63 @@
  * 
  * 
  */
-import java.math.BigDecimal;
 
 class Solution {
     public int myAtoi(String str) {
-        str = str.trim();
-
-        String s = "";
-        for (int i = 0; i < str.length(); i++) {
-            final char c = str.charAt(i);
-            if (((c == 45 || c == 43) && i == 0) ||
-                    (c >= 48 && c <= 57)) {
-                s += String.valueOf(c);
-            } else {
-                break;
+        char[] chars = (str + "eof").trim().toCharArray();
+        int res = 0;
+        int signal = 1;
+        //0 初始状态
+        //1 正数
+        //2 负数
+        //3 结束
+        //4 正数溢出
+        //5 负数溢出
+        //e 错误状态
+        char state = '0';
+        for (char c : chars) {
+            switch (state) {
+                case '0':
+                    switch (c) {
+                        case '+':
+                            state = '1';
+                            break;
+                        case '-':
+                            state = '2';
+                            signal = -1;
+                            break;
+                        default:
+                            if (c >= '0' && c <= '9') {
+                                state = '1';
+                                res = res * 10 + c - '0';
+                            } else {
+                                state = 'e';
+                            }
+                    }
+                    break;
+                case '1':
+                case '2':
+                    if (c >= '0' && c <= '9') {
+                        int preRes = res;
+                        res = res * 10 + (c - '0') * signal;
+                        if (preRes != 0 && (res / 10 != preRes)) {
+                            state = (preRes & Integer.MIN_VALUE) == 0 ? '4' : '5';
+                        }
+                    } else {
+                        state = '3';
+                    }
+                    break;
+                case '3':
+                    return res;
+                case '4':
+                    return Integer.MAX_VALUE;
+                case '5':
+                    return Integer.MIN_VALUE;
+                case 'e':
+                    return 0;
             }
         }
-
-        if (s.equals("") || s.equals("-") || s.equals("+")) {
-            return 0;
-        }
-
-        final BigDecimal b = new BigDecimal(s);
-
-        if (b.compareTo(new BigDecimal(Integer.MIN_VALUE)) < 0) {
-            return Integer.MIN_VALUE;
-        }
-
-        if (b.compareTo(new BigDecimal(Integer.MAX_VALUE)) > 0) {
-            return Integer.MAX_VALUE;
-        }
-
-        return b.intValue();
+        return res;
     }
-
 }
 
