@@ -28,37 +28,25 @@
  */
 class Solution {
     public int trap(int[] height) {
-        int sumArea = 0;
-
-        for (int i = 0; i < height.length - 1; i++) {
-            int left = height[i];
-            int next = height[i + 1];
-
-            int minus = left - next;
-            if (minus <= 0) {
-                continue;
-            }
-
-            for (int unit = 1; unit <= minus; unit++) {
-                int w = 1;
-                while (true) {
-                    if (i + w >= height.length) {
-                        w = 0;
-                        break;
-                    }
-                    if (height[i + w] <= left - unit) {
-                        w++;
-                    } else {
-                        w--;
-                        break;
-                    }
-                }
-                sumArea += w;
-            }
-
+        int res = 0;
+        int len = height.length;
+        if (len == 0) {
+            return res;
         }
-
-        return sumArea;
+        int[] leftMax = new int[len];
+        int[] rightMax = new int[len];
+        leftMax[0] = height[0];
+        for (int i = 1; i < len; i++) {
+            leftMax[i] = Math.max(leftMax[i - 1], height[i]);
+        }
+        rightMax[len - 1] = height[len - 1];
+        for (int i = len - 2; i >= 0; i--) {
+            rightMax[i] = Math.max(rightMax[i + 1], height[i]);
+        }
+        for (int i = 1; i < len - 1; i++) {
+            res += Math.max(Math.min(leftMax[i - 1], rightMax[i + 1]) - height[i], 0);
+        }
+        return res;
     }
 }
 
