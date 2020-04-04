@@ -30,21 +30,21 @@ class Solution {
     public int trap(int[] height) {
         int res = 0;
         int len = height.length;
-        if (len == 0) {
+        if (len <= 2) {
             return res;
         }
-        int[] leftMax = new int[len];
-        int[] rightMax = new int[len];
-        leftMax[0] = height[0];
-        for (int i = 1; i < len; i++) {
-            leftMax[i] = Math.max(leftMax[i - 1], height[i]);
-        }
-        rightMax[len - 1] = height[len - 1];
-        for (int i = len - 2; i >= 0; i--) {
-            rightMax[i] = Math.max(rightMax[i + 1], height[i]);
-        }
-        for (int i = 1; i < len - 1; i++) {
-            res += Math.max(Math.min(leftMax[i - 1], rightMax[i + 1]) - height[i], 0);
+        Stack<Integer> stack = new Stack<>();
+        for (int rightIdx = 0; rightIdx < len; rightIdx++) {
+            while (!stack.isEmpty() && height[rightIdx] > height[stack.peek()]) {
+                int bottomIdx = stack.pop();
+                if (!stack.isEmpty()) {
+                    int leftIdx = stack.peek();
+                    int h = Math.min(height[leftIdx], height[rightIdx]) - height[bottomIdx];
+                    int d = rightIdx - leftIdx - 1;
+                    res += h * d;
+                }
+            }
+            stack.add(rightIdx);
         }
         return res;
     }
