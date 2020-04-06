@@ -48,36 +48,29 @@
  */
 class Solution {
     public int minDistance(String word1, String word2) {
-        if (word1.length() == 0) {
-            return word2.length();
-        }
-        if (word2.length() == 0) {
-            return word1.length();
-        }
-        char[] w1 = word1.toCharArray();
-        char[] w2 = word2.toCharArray();
-        int[] dp = new int[w2.length + 1];
-        for (int i = 0; i < w2.length; i++) {
-            dp[i + 1] = i + 1;
-        }
-        int pre = 0;
-        for (int i = 0; i < w1.length; i++) {
-            for (int j = 0; j < w2.length; j++) {
+        int len1 = word1.length();
+        int len2 = word2.length();
+        char[] chars1 = word1.toCharArray();
+        char[] chars2 = word2.toCharArray();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+        for (int i = 0; i <= len1; i++) {
+            for (int j = 0; j <= len2; j++) {
+                if (i == 0) {
+                    dp[i][j] = j;
+                    continue;
+                }
                 if (j == 0) {
-                    pre = dp[0];
-                    dp[0] = i + 1;
+                    dp[i][j] = i;
+                    continue;
                 }
-                int tmp = dp[j + 1];
-                if (w1[i] == w2[j]) {
-                    dp[j + 1] = pre;
+                if (chars1[i - 1] == chars2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    dp[j + 1] = Math.min(Math.min(dp[j + 1], dp[j]), pre) + 1;
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
                 }
-                pre = tmp;
-
             }
         }
-        return dp[w2.length];
+        return dp[len1][len2];
     }
 }
 
