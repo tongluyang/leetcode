@@ -58,23 +58,9 @@
 // @lc code=start
 class Solution {
     public String reverseWords(String s) {
-        String[] words = s.split("[ \\u00A0]+");
-        if (words.length == 0) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (String word : words) {
-            if (word.equals("")) {
-                continue;
-            }
-            if (sb.length() == 0) {
-                sb.append(word);
-                continue;
-            }
-            sb.insert(0, " ").insert(0, word);
-        }
-        return sb.toString();
+        final StringBuilder sb = new StringBuilder();
+        Arrays.stream(s.trim().split(" +")).forEach(word -> sb.insert(0, word).insert(0, " "));
+        return sb.toString().trim();
     }
 }
 // @lc code=end
