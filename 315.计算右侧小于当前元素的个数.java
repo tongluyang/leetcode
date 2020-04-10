@@ -32,55 +32,56 @@
 // @lc code=start
 class Solution {
     public List<Integer> countSmaller(int[] nums) {
-        List<Integer> res = new ArrayList<>();
-        if (nums.length == 0) {
-            return res;
+        List<Integer> list = new ArrayList<>();
+        int len = nums.length;
+        if (len == 0) {
+            return list;
         }
-        Set<Integer> set = new TreeSet<>();
-        for (int num : nums) {
-            set.add(num);
+        int[] indexes = new int[len];
+        for (int i = 0; i < indexes.length; i++) {
+            indexes[i] = i;
         }
-        Map<Integer, Integer> map = new HashMap<>();
-        int rank = 1;
-        for (Integer num : set) {
-            map.put(num, rank++);
+        int[] res = new int[len];
+        int[] tmp = new int[len];
+        mergeSort(nums, indexes, 0, len - 1, res, tmp);
+        for (int c : res) {
+            list.add(c);
         }
-        final BIT bit = new BIT(set.size() + 1);
-        for (int i = nums.length - 1; i >= 0; i--) {
-            rank = map.get(nums[i]);
-            bit.inc(rank);
-            final int count = bit.get(rank - 1);
-            res.add(count);
-        }
-        Collections.reverse(res);
-        return res;
+        return list;
     }
 
-    static class BIT {
-        int[] tree;
-
-        public BIT(int len) {
-            this.tree = new int[len];
+    private void mergeSort(int[] nums, int[] indexes, int l, int r, int[] res, int[] tmp) {
+        if (l == r) {
+            return;
         }
+        int mid = (l + r) / 2;
+        mergeSort(nums, indexes, l, mid, res, tmp);
+        mergeSort(nums, indexes,mid + 1, r, res, tmp);
 
-        public void inc(int idx) {
-            while (idx < tree.length) {
-                tree[idx]++;
-                idx += lowbit(idx);
+        int i = l;
+        int j = mid + 1;
+        while (i <= mid) {
+            while (j <= r && nums[indexes[i]] > nums[indexes[j]]) {
+                j++;
             }
+            res[indexes[i]] += j - mid - 1;
+            i++;
         }
 
-        public int get(int idx) {
-            int sum = 0;
-            while (idx > 0) {
-                sum += tree[idx];
-                idx -= lowbit(idx);
+        if (l == 0 && r == nums.length - 1) {
+            return;
+        }
+        System.arraycopy(indexes, l, tmp, l, r - l + 1);
+        int p1 = l;
+        int p2 = mid + 1;
+        i = l;
+
+        while (p1 <= mid || p2 <= r) {
+            if (p2 > r || (p1 <= mid && nums[tmp[p1]] < nums[tmp[p2]])) {
+                indexes[i++] = tmp[p1++];
+            } else {
+                indexes[i++] = tmp[p2++];
             }
-            return sum;
-        }
-
-        private int lowbit(int x) {
-            return x & (-x);
         }
     }
 }
