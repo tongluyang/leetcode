@@ -67,37 +67,34 @@
 // @lc code=start
 class Solution {
     public int superEggDrop(int K, int N) {
-        int[][] dp = new int[K + 1][N + 1];
-        for (int k = 0; k <= K; k++) {
-            for (int n = 1; n <= N; n++) {
-                dp[k][n] = Integer.MAX_VALUE;
-                if (k == 0) {
-                    continue;
-                } else if (k == 1) {
-                    dp[k][n] = n;
-                    continue;
-                }
-                int l = 1;
-                int r = n;
-                while (l + 1 < r) {
-                    int x = (l + r) >>> 1;
-                    int X1 = dp[k - 1][x - 1];
-                    int X2 = dp[k][n - x];
+        //dp[k][j]代表k个鸡蛋，操作j次，在最坏的情况下可以验证N层，其中包含F
+        //比如只有一个蛋，可操作10次，那从1层开始丢，10层及以下的F是肯定可以被找出来的
+        //如果要保证通过j次操作，可以在最少的次数内找到F
+        //那需要一定的策略
+        //使不管实验一次的结果是破还是不破，后续都应该能满足要求
+        //使用最少次数的策略，在X层丢一个蛋，可能破也可能不破
+        //如果破了，可以保证在少了一个蛋和少了一次实验次数的情况下，可以在X以下层数找到F，也就是dp[k - 1][j - 1]等于X - 1
+        //如果没破，可以保证在蛋没少至少了一次实验的情况下，可以在X及以上层中找到F，也就是dp[k][j - 1]等于N - X
+        //N = (X - 1) + (N - X) + 1
+        //N = dp[k][j]
+        //X - 1 = dp[k - 1][j - 1]
+        //N - X = dp[1][j - 1]
+        //所以dp[k - 1][j - 1] + dp[k][j - 1] + 1;
 
-                    if (X1 > X2) {
-                        r = x;
-                    } else if (X1 < X2) {
-                        l = x;
-                    } else {
-                        l = r = x;
-                    }
+        int[][] dp = new int[K + 1][N + 1];
+        int j = 0;
+        for (int k = 1; k <= K; k++) {
+            j = 0;
+            do {
+                j++;
+                if (k == 1) {
+                    dp[k][j] = j;
+                    continue;
                 }
-                int max1 = Math.max(dp[k - 1][l - 1], dp[k][n - l]);
-                int max2 = Math.max(dp[k - 1][r - 1], dp[k][n - r]);
-                dp[k][n] = Math.min(max1, max2) + 1;
-            }
+                dp[k][j] = dp[k - 1][j - 1] + dp[k][j - 1] + 1;
+            } while (dp[k][j] < N);
         }
-        return dp[K][N];
+        return j;
     }
 }
 // @lc code=end
