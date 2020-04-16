@@ -31,23 +31,26 @@
  */
 class Solution {
     public int[][] merge(int[][] intervals) {
-        if (intervals.length <= 1) {
+        if (intervals.length < 2) {
             return intervals;
         }
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-        List<int[]> list = new ArrayList<>(intervals.length);
-
-        int[] ints = intervals[0];
-        for (int i = 1; i < intervals.length; i++) {
-            if (ints[1] >= intervals[i][0]) {
-                ints[1] = Math.max(ints[1], intervals[i][1]);
+        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+        int p0 = 0;
+        int p1 = 1;
+        while (p1 < intervals.length) {
+            int[] pre = intervals[p0];
+            int[] post = intervals[p1];
+            if (pre[1] >= post[0]) {//吃掉
+                pre[1] = pre[1] > post[1] ? pre[1] : post[1];
             } else {
-                list.add(ints);
-                ints = intervals[i];
+                p0++;
+                intervals[p0] = intervals[p1];
             }
+            p1++;
         }
-        list.add(ints);
-        return list.toArray(new int[list.size()][]);
+        int[][] res = new int[p0 + 1][2];
+        System.arraycopy(intervals, 0, res, 0, p0 + 1);
+        return res;
     }
 }
 
