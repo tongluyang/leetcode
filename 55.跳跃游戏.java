@@ -37,17 +37,11 @@
 class Solution {
     public boolean canJump(int[] nums) {
         int max = 0;
-        for (int i = 0; i < nums.length - 1; i++) {
-            if (nums[i] + i > nums.length - 2) {
-                return true;
-            }
-            max = Math.max(max, i + nums[i]);
-            if (i == max) {
-                return false;
-            }
+        for (int i = 0; i < nums.length && i <= max; i++) {
+            int num = nums[i];
+            max = i + num > max ? i + num : max;
         }
-
-        return true;
+        return max >= nums.length - 1;
     }
 }
 
