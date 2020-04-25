@@ -31,28 +31,25 @@
  */
 class Solution {
     public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        List<Integer> rem = new ArrayList<>();
-        for (int num : nums) {
-            rem.add(num);
-        }
-        permute(result, new ArrayList<>(), rem);
-        return result;
+        List<List<Integer>> res = new ArrayList<>();
+        backtrack(res, new ArrayList<>(), nums, new boolean[nums.length]);
+        return res;
     }
 
-    public void permute(List<List<Integer>> result, List<Integer> single, List<Integer> rem) {
-        if (rem.size() == 0) {
-            result.add(single);
+    private void backtrack(List<List<Integer>> res, List<Integer> seq, int[] nums, boolean[] visited) {
+        if (seq.size() == nums.length) {
+            res.add(seq);
             return;
         }
-
-        for (int i = 0; i < rem.size(); i++) {
-            Integer v = rem.get(i);
-            single.add(v);
-            ArrayList<Integer> newRem = new ArrayList<>(rem);
-            newRem.remove(v);
-            permute(result, new ArrayList<>(single), newRem);
-            single.remove(v);
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+            List<Integer> newSeq = new ArrayList<>(seq);
+            newSeq.add(nums[i]);
+            visited[i] = true;
+            backtrack(res, newSeq, nums, visited);
+            visited[i] = false;
         }
     }
 }
