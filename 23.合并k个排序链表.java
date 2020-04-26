@@ -36,37 +36,27 @@
  */
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
-        ListNode node = null;
-        for (ListNode list : lists) {
-            if (node == null) {
-                node = list;
-                continue;
-            }
-
-            ListNode next = node;
-            while (list != null) {
-                while (true) {
-                    if (next.val > list.val) {
-                        ListNode listNode = new ListNode(list.val);
-                        listNode.next = node;
-                        node = listNode;
-                        list = list.next;
-                        next = node;
-                        break;
-                    } else if (next.val <= list.val && (next.next == null || next.next.val > list.val)) {
-                        ListNode tmp = next.next;
-                        next.next = new ListNode(list.val);
-                        next.next.next = tmp;
-                        list = list.next;
-                        break;
-                    } else {
-                        next = next.next;
-                    }
-                }
-
+        PriorityQueue<ListNode> queue = new PriorityQueue<>((a, b) -> a.val - b.val);
+        for (ListNode node : lists) {
+            if (node != null) {
+                queue.add(node);
             }
         }
-        return node;
+        ListNode res = null;
+        ListNode last = null;
+        while (!queue.isEmpty()) {
+            ListNode min = queue.poll();
+            if (res == null) {
+                res = min;
+            } else {
+                last.next = min;
+            }
+            last = min;
+            if (min.next != null) {
+                queue.add(min.next);
+            }
+        }
+        return res;
     }
 }
 
