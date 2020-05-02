@@ -40,29 +40,29 @@
  */
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        int start = 0;
-        int max = 0;
-        int curMax = 0;
-        final HashSet<Character> characters = new HashSet<>();
-        for (int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
-            if (characters.contains(c)) {
-                characters.clear();
-                max = max > curMax ? max : curMax;
-                curMax = 0;
-                start++;
-                i = start - 1;
-
-                if (s.length() - start < max) {
-                    break;
-                }
-            } else {
-                characters.add(c);
-                curMax++;
-            }
+        int len = s.length();
+        if (len == 0) {
+            return 0;
         }
-        max = max > curMax ? max : curMax;
-
+        int p0 = 0;
+        int p1 = 0;
+        char[] chars = s.toCharArray();
+        Set<Character> set = new HashSet<>();
+        int max = 0;
+        while (p1 < len) {
+            char c = chars[p1];
+            if (set.contains(c)) {
+                max = Math.max(max, set.size());
+                char tmp;
+                do {
+                    tmp = chars[p0++];
+                    set.remove(tmp);
+                } while (tmp != c);
+            }
+            set.add(c);
+            p1++;
+        }
+        max = Math.max(max, set.size());
         return max;
     }
 }
