@@ -34,15 +34,19 @@
  */
 class Solution {
     public int jump(int[] nums) {
+        //当前这一步的下一步可达到的最远位置
         int f = 0;
+        //当前这一步的最远位置
         int end = 0;
         int step = 0;
         for (int i = 0; i < nums.length - 1; i++) {
+            //下一步就到结尾了，加一后可以结束了
             if (nums[i] + i >= nums.length - 1) {
                 step++;
                 break;
             }
             f = Math.max(f, nums[i] + i);
+            //这一步最远就到这里了，还没结束，再往后就要多走一步了，这一步能到的最远位置就是上一步中每个位置多走一步能到达的最远位置
             if (i == end) {
                 step++;
                 end = f;
