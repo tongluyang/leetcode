@@ -55,31 +55,32 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
 class Solution {
     public boolean isValidBST(TreeNode root) {
+        return isValidBST(root, null, null);
+    }
+
+    private boolean isValidBST(TreeNode root, Integer min, Integer max) {
         if (root == null) {
             return true;
         }
-        return isValidBST(root, new Integer[]{null});
-    }
-
-    private boolean isValidBST(TreeNode root, Integer[] preVal) {
-        if (root.left != null) {
-            if (!isValidBST(root.left, preVal)) {
-                return false;
-            }
-        }
-
-        if (!(preVal[0] == null || root.val > preVal[0])) {
+        if (min != null && root.val <= min) {
             return false;
         }
-        preVal[0] = root.val;
-
-        if (root.right != null) {
-            return isValidBST(root.right, preVal);
+        if (max != null && root.val >= max) {
+            return false;
         }
-
-        return true;
+        
+        return isValidBST(root.left, min, root.val) && isValidBST(root.right, root.val, max);
     }
 }
 
