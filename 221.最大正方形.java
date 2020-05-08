@@ -31,26 +31,23 @@
 // @lc code=start
 class Solution {
     public int maximalSquare(char[][] matrix) {
-        if (matrix.length == 0) {
+        int row = matrix.length;
+        if (row == 0) {
             return 0;
         }
-        if (matrix[0].length == 0) {
+        int col = matrix[0].length;
+        if (col == 0) {
             return 0;
         }
-        int[][] dp = new int[matrix.length + 1][matrix[0].length + 1];
+        int[][] dp = new int[row + 1][col + 1];
         int max = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                char c = matrix[i][j];
-                if (c == '0') {
-                    dp[i + 1][j + 1] = 0;
-                } else {
-                    if (dp[i][j] > 0 && dp[i][j + 1] == dp[i][j] && dp[i + 1][j] == dp[i][j]) {
-                        dp[i + 1][j + 1] = dp[i][j] + 1;
-                    } else {
-                        dp[i + 1][j + 1] = Math.min(Math.min(dp[i][j], dp[i][j + 1]), dp[i + 1][j]) + 1;
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= col; j++) {
+                if (matrix[i - 1][j - 1] == '1') {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                    if (dp[i][j] > max) {
+                        max = dp[i][j];
                     }
-                    max = Math.max(max, dp[i + 1][j + 1]);
                 }
             }
         }
