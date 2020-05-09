@@ -36,24 +36,20 @@
  */
 class Solution {
     public int mySqrt(int x) {
-        if (x < 2) {
-            return x;
-        }
-
-        long max = x;
-        long min = 0;
-        long v;
-        while (true) {
-            v = (max + min) / 2;
-            if (v * v <= (long) x && (v + 1) * (v + 1) > (long) x) {
-                return (int) v;
-            }
-            if (v * v > (long) x) {
-                max = v;
+        int l = 1;
+        int r = x / 2;
+        while (l < r) {
+            int mid = (l + r) >>> 1;
+            long s = (long) mid * mid;
+            if (s == x) {
+                return mid;
+            } else if (s > x) {
+                r = mid - 1;
             } else {
-                min = v;
+                l = mid + 1;
             }
         }
+        return ((long) l * l) > x ? l - 1 : l;
     }
 }
 
