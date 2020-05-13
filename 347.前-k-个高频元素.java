@@ -52,15 +52,15 @@ class Solution {
             map.put(num, map.getOrDefault(num, 0) + 1);
         }
         int[] res = new int[k];
-        PriorityQueue<List<Integer>> queue = new PriorityQueue<>((a, b) -> a.get(1) - b.get(1));
+        PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> map.get(a) - map.get(b));
         for (int num : map.keySet()) {
-            queue.add(Arrays.asList(num, map.get(num)));
+            queue.add(num);
             if (queue.size() > k) {
                 queue.remove();
             }
         }
         while (k > 0) {
-            res[--k] = queue.remove().get(0);
+            res[--k] = queue.remove();
         }
         return res;
     }
