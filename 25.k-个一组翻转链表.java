@@ -45,53 +45,44 @@
  */
 class Solution {
     public ListNode reverseKGroup(ListNode head, int k) {
-        if (head == null || head.next == null) {
+        if (k <= 1 || head == null || head.next == null) {
             return head;
         }
-        ListNode newHead = head;
-        for (int i = 0; i < k - 1; i++) {
-            newHead = newHead.next;
-            if (newHead == null) {
-                newHead = head;
-                break;
-            }
-        }
-
-        ListNode pre = null;
-
-        while (true) {
-
-            Stack<ListNode> stack = new Stack<>();
-            for (int i = 0; i < k; i++) {
+        
+        Stack<ListNode> stack = new Stack<>();
+        ListNode res = null;
+        ListNode last = null;
+        boolean end = false;
+        while (!end) {
+            int i = 0;
+            ListNode tmpHead = head;
+            while (i < k) {
+                stack.push(head);
                 if (head == null) {
+                    end = true;
                     break;
                 }
-                stack.push(head);
                 head = head.next;
+                i++;
             }
-
-            if (stack.size() < k) {
-                break;
-            }
-
-            ListNode behind = stack.pop();
-
-            if (pre != null) {
-                pre.next = behind;
-            }
-
-            while (!stack.empty()) {
-                ListNode ahead = stack.pop();
-                behind.next = ahead;
-                behind = ahead;
-                if (stack.empty()) {
-                    ahead.next = head;
-                    pre = ahead;
+            if (end) {
+                if (res == null) {
+                    res = tmpHead;
+                } else {
+                    last.next = tmpHead;
+                }
+            } else {
+                if (res == null) {
+                    res = stack.pop();
+                    last = res;
+                }
+                while (!stack.isEmpty()) {
+                    last.next = stack.pop();
+                    last = last.next;
                 }
             }
         }
-
-        return newHead;
+        return res;
     }
 
 }
