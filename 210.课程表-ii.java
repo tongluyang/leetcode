@@ -57,14 +57,15 @@
 // @lc code=start
 class Solution {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        int[] order = new int[numCourses];
-        Map<Integer, Set<Integer>> map = new HashMap<>();
         int[] indegree = new int[numCourses];
-        for (int[] prerequisite : prerequisites) {
-            Set<Integer> set = map.getOrDefault(prerequisite[1], new HashSet<>());
-            set.add(prerequisite[0]);
-            map.put(prerequisite[1], set);
-            indegree[prerequisite[0]]++;
+        int[] res = new int[numCourses];
+        List<List<Integer>> list = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            list.add(new ArrayList<>());
+        }
+        for (int[] p : prerequisites) {
+            indegree[p[0]]++;
+            list.get(p[1]).add(p[0]);
         }
         Queue<Integer> queue = new LinkedList<>();
         for (int i = 0; i < numCourses; i++) {
@@ -72,26 +73,23 @@ class Solution {
                 queue.add(i);
             }
         }
-        int idx = 0;
+        int i = 0;
         while (!queue.isEmpty()) {
-            Integer pre = queue.poll();
-            order[idx++] = pre;
+            int c = queue.poll();
+            res[i++] = c;
             numCourses--;
-            Set<Integer> set = map.get(pre);
-            if (set == null) {
-                continue;
-            }
-            for (Integer integer : set) {
-                indegree[integer]--;
-                if (indegree[integer] == 0) {
-                    queue.add(integer);
+            for (int crose : list.get(c)) {
+                indegree[crose]--;
+                if (indegree[crose] == 0) {
+                    queue.add(crose);
                 }
             }
         }
+
         if (numCourses == 0) {
-            return order;
+            return res;
         }
-        return new int[]{};
+        return new int[0];
     }
 }
 // @lc code=end
