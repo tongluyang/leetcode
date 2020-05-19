@@ -40,31 +40,33 @@ class Solution {
         int[][] sum = new int[row][col + 1];
         for (int c1 = 0; c1 < col; c1++) {
             for (int c2 = c1; c2 < col; c2++) {
-                TreeSet<Integer> set = new TreeSet<>();
-                set.add(0);
-                int[] preSum = new int[row + 1];
-
+                int colMax = Integer.MIN_VALUE;
+                int[] colSum = new int[row];
                 for (int i = 0; i < row; i++) {
                     if (c1 == 0) {
                         sum[i][c2 + 1] = sum[i][c2] + matrix[i][c2];
                     }
 
                     int s = sum[i][c2 + 1] - sum[i][c1];
-                    preSum[i + 1] = s + preSum[i];
-                    // s - s' <= k
-                    // s' 尽可能的小
-                    // s' = s - k
-                    Integer c = set.ceiling(preSum[i + 1] - k);
-                    set.add(preSum[i + 1]);
-                    if (c == null) {
-                        continue;
-                    }
-                    int area = preSum[i + 1] - c;
-                    if (area == k) {
+                    colMax = Math.max(colMax + s, s);
+                    if (colMax == k) {
                         return k;
                     }
-                    if (area > max) {
-                        max = area;
+                    colSum[i] = s;
+                }
+                if (colMax < k && colMax > max) {
+                    max = colMax;
+                }
+                for (int l = 0; l < colSum.length; l++) {
+                    int s = 0;
+                    for (int r = l; r < colSum.length; r++) {
+                        s += colSum[r];
+                        if (s > max && s <= k) {
+                            max = s;
+                        }
+                        if (max == k) {
+                            return k;
+                        }
                     }
                 }
             }
