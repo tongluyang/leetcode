@@ -36,22 +36,35 @@ class Solution {
     public int maxSumSubmatrix(int[][] matrix, int k) {
         int row = matrix.length;
         int col = matrix[0].length;
-        int[][] sum = new int[row + 1][col + 1];
         int max = Integer.MIN_VALUE;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                sum[i + 1][j + 1] = matrix[i][j] + sum[i][j + 1] + sum[i + 1][j] - sum[i][j];
-                // x = sum[i'][j']
-                // sum[i + 1][j + 1] - sum[i'][j + 1] - sum[i + 1][j'] + x <= k
-                // x要尽可能大，但又不能太大
-                for (int i1 = 0; i1 <= i; i1++) {
-                    for (int j1 = 0; j1 <= j; j1++) {
-                        int area = sum[i + 1][j + 1] - sum[i1][j + 1] - sum[i + 1][j1] + sum[i1][j1];
-                        if (area == k) {
-                            return k;
-                        } else if (area < k && area > max) {
-                            max = area;
-                        }
+        int[][] sum = new int[row][col + 1];
+        for (int c1 = 0; c1 < col; c1++) {
+            for (int c2 = c1; c2 < col; c2++) {
+                TreeSet<Integer> set = new TreeSet<>();
+                set.add(0);
+                int[] preSum = new int[row + 1];
+
+                for (int i = 0; i < row; i++) {
+                    if (c1 == 0) {
+                        sum[i][c2 + 1] = sum[i][c2] + matrix[i][c2];
+                    }
+
+                    int s = sum[i][c2 + 1] - sum[i][c1];
+                    preSum[i + 1] = s + preSum[i];
+                    // s - s' <= k
+                    // s' 尽可能的小
+                    // s' = s - k
+                    Integer c = set.ceiling(preSum[i + 1] - k);
+                    set.add(preSum[i + 1]);
+                    if (c == null) {
+                        continue;
+                    }
+                    int area = preSum[i + 1] - c;
+                    if (area == k) {
+                        return k;
+                    }
+                    if (area > max) {
+                        max = area;
                     }
                 }
             }
