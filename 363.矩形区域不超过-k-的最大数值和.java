@@ -37,30 +37,49 @@ class Solution {
         int row = matrix.length;
         int col = matrix[0].length;
         int max = Integer.MIN_VALUE;
+        int[] rowSums = new int[row];
         int[][] sum = new int[row][col + 1];
+        //固定列边界
         for (int c1 = 0; c1 < col; c1++) {
             for (int c2 = c1; c2 < col; c2++) {
+                // leetcode 53题，求最大和
                 int colMax = Integer.MIN_VALUE;
-                int[] colSum = new int[row];
+                int colSum = 0;
                 for (int i = 0; i < row; i++) {
-                    if (c1 == 0) {
+                    if (c1 == 0) {//左边界为0时，随着右边界移动，足够求出每行的前缀和
                         sum[i][c2 + 1] = sum[i][c2] + matrix[i][c2];
                     }
 
-                    int s = sum[i][c2 + 1] - sum[i][c1];
-                    colMax = Math.max(colMax + s, s);
-                    if (colMax == k) {
+                    //当前行边界内的和
+                    int rowSum = sum[i][c2 + 1] - sum[i][c1];
+                    if (colSum > 0) {
+                        colSum += rowSum;
+                    } else {
+                        colSum = rowSum;
+                    }
+                    if (colSum > colMax) {
+                        colMax = colSum;
+                    }
+                    if (colMax == k) {//找到k了，提前结束
                         return k;
                     }
-                    colSum[i] = s;
+                    //存储所有的行的和，用于找不到符合条件的k时，再次查找
+                    rowSums[i] = rowSum;
                 }
-                if (colMax < k && colMax > max) {
-                    max = colMax;
+                //最大和比k小，本次边界的结果就是最大值，后面就不用找了
+                if (colMax < k) {
+                    //根据本次边界最大值更新全局的最大值
+                    if (colMax > max) {
+                        max = colMax;
+                    }
+                    continue;
                 }
-                for (int l = 0; l < colSum.length; l++) {
+                //最大值超过k了，要找和比k小的数中最大的一个
+                //暴力搜素
+                for (int l = 0; l < rowSums.length; l++) {
                     int s = 0;
-                    for (int r = l; r < colSum.length; r++) {
-                        s += colSum[r];
+                    for (int r = l; r < rowSums.length; r++) {
+                        s += rowSums[r];
                         if (s > max && s <= k) {
                             max = s;
                         }
