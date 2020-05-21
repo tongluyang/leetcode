@@ -29,65 +29,26 @@
  * 
  * 
  */
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 class Solution {
     public String longestPalindrome(String s) {
-        final int count = getCount(s);
-        return getStr(count, s);
-    }
-
-    public int getCount(String s) {
-        final int max = s.length() / 2;
-        int cur = 1;
-        for (; cur <= max; cur++) {
-            final Pattern pattern = Pattern.compile(buildRegex(cur));
-            final Matcher matcher = pattern.matcher(s);
-            int start = 0;
-            if (!matcher.find(start)) {
-                if (cur == 1) {
-                    return 0;
+        int len = s.length();
+        String max = "";
+        boolean[][] dp = new boolean[len][len];
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = i; j < len; j++) {
+                if (i == j) {
+                    dp[i][j] = true;
+                } else if (i + 1 == j) {
+                    dp[i][j] = s.charAt(i) == s.charAt(j);
+                } else {
+                    dp[i][j] = dp[i + 1][j - 1] && (s.charAt(i) == s.charAt(j));
                 }
-                break;
+                if (dp[i][j] && j - i + 1 > max.length()) {
+                    max = s.substring(i, j + 1);
+                }
             }
         }
-        return cur - 1;
-    }
-
-    public String getStr(int count, String s) {
-        if (s.length() == 0) {
-            return s;
-        }
-        if (count <= 0) {
-            return String.valueOf(s.charAt(0));
-        }
-
-        String result = "";
-        final Pattern pattern = Pattern.compile(buildRegex(count));
-        final Matcher matcher = pattern.matcher(s);
-        int start = 0;
-        while (matcher.find(start)) {
-            String group = matcher.group();
-
-            result = group.length() > result.length() ? group : result;
-
-            start = matcher.start() + 1;
-        }
-        return result;
-    }
-
-    public String buildRegex(int count) {
-        StringBuilder regex = new StringBuilder("(");
-        for (int i = count; i > 0; i--) {
-            regex.append("(.)");
-        }
-        regex.append(".?");
-        for (int i = count; i > 0; i--) {
-            regex.append("\\" + (i + 1));
-        }
-        regex.append(")");
-        return regex.toString();
+        return max;
     }
 }
 
