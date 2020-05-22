@@ -42,31 +42,22 @@
  * }
  */
 class Solution {
+    int rootIdx = 0;
+    Map<Integer, Integer> idx = new HashMap<>();
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        if (preorder.length == 0) {
+        for (int i = 0; i < inorder.length; i++) {
+            idx.put(inorder[i], i);
+        }
+        return buildTree(preorder, inorder, 0, inorder.length - 1);
+    }
+    
+    private TreeNode buildTree(int[] preorder, int[] inorder, int start, int end) {
+        if (start > end) {
             return null;
         }
-        return buildTree(preorder, new int[1], inorder, 0, inorder.length - 1);
-    }
-
-    private TreeNode buildTree(int[] preorder, int[] i, int[] inorder, int start, int end) {
-        TreeNode root = new TreeNode(preorder[i[0]]);
-        int mid = -1;
-        for (int x = start; x <= end; x++) {
-            if (inorder[x] == preorder[i[0]]) {
-                mid = x;
-                break;
-            }
-        }
-        if (start < mid) {
-            i[0]++;
-            root.left = buildTree(preorder, i, inorder, start, mid - 1);
-        }
-        if (mid < end) {
-            i[0]++;
-            root.right = buildTree(preorder, i, inorder, mid + 1, end);
-        }
-
+        TreeNode root = new TreeNode(preorder[rootIdx++]);
+        root.left = buildTree(preorder, inorder, start, idx.get(root.val) - 1);
+        root.right = buildTree(preorder, inorder, idx.get(root.val) + 1, end);
         return root;
     }
 }
