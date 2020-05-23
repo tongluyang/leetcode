@@ -30,70 +30,55 @@
  */
 class Solution {
     public String minWindow(String s, String t) {
-        if (s.length() == 0 || t.length() == 0) {
-            return "";
+        //[p0, p1)
+        int p0 = 0;
+        int p1 = 0;
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c : t.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        Map<Character, Integer> window = new HashMap<>();
+        for (char c : map.keySet()) {
+            window.put(c, 0);
         }
 
-        int left = 0;
-        int right = 0;
-        int minLeft = 0;
-        int minRight = 0;
-        int min = Integer.MAX_VALUE;
-
-        char[] sa = s.toCharArray();
-        char[] ta = t.toCharArray();
-        Map<Character, Integer> need = new HashMap<>();
-        Map<Character, Integer> cur = new HashMap<>();
-
-        for (char c : ta) {
-            need.put(c, need.getOrDefault(c, 0) + 1);
-        }
-
-        while (right < sa.length) {
-            if (need.containsKey(sa[right])) {
-                cur.put(sa[right], cur.getOrDefault(sa[right], 0) + 1);
+        int count = 0;
+        String min = "";
+        while (p1 < s.length()) {
+            char c = s.charAt(p1);
+            if (!map.containsKey(c)) {//非目标字符
+                p1++;
+                continue;
             }
-            right++;
+            //记录匹配的数量
+            window.put(c, window.get(c) + 1);
+            if (window.get(c) <= map.get(c)) {//如果没有多余的字符，记录加一，用于后续判断是否都找全了
+                count++;
+            }
+            if (count == t.length()) {//全找到了
+                //左指针右移，吐出字符
+                while (true) {
+                    char left = s.charAt(p0);
+                    if (window.containsKey(left)) {
+                        // 吐之前，先把字符串提取出来
+                        int len = p1 + 1 - p0;
+                        if (min.equals("") || min.length() > len) {
+                            min = s.substring(p0, p1 + 1);
+                        }
+                        window.put(left, window.get(left) - 1);
 
-            boolean certainMatch = false;
-            char single = 0;
-            while (certainMatch || isMatch(need, cur, single)) {
-                if (min > right - left) {
-                    min = right - left;
-                    minLeft = left;
-                    minRight = right;
+                        if (window.get(left) < map.get(left)) {
+                            count--;
+                            p0++;
+                            break;
+                        }
+                    }
+                    p0++;
                 }
-
-                if (!need.containsKey(sa[left])) {
-                    left++;
-                    certainMatch = true;
-                    continue;
-                }
-                certainMatch = false;
-
-                cur.put(sa[left], cur.get(sa[left]) - 1);
-                single = sa[left];
-                left++;
             }
+            p1++;
         }
-
-        return s.substring(minLeft, minRight);
-    }
-
-    private boolean isMatch(Map<Character, Integer> need, Map<Character, Integer> cur, char single) {
-        if (single > 0) {
-            return need.get(single) <= cur.get(single);
-        }
-        if (need.size() != cur.size()) {
-            return false;
-        }
-
-        for (Character key : need.keySet()) {
-            if (cur.get(key) < need.get(key)) {
-                return false;
-            }
-        }
-        return true;
+        return min;
     }
 }
 
