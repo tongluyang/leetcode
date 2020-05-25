@@ -41,109 +41,105 @@
  */
 
 // @lc code=start
-public class LRUCache {
-    int capacity;
-    DLink dLink = new DLink();
-    Map<Integer, Node> map = new HashMap<>();
+class LRUCache {
 
-    public static class DLink {
-        Node head;
-        Node tail;
-
-        public void moveToHead(Node node) {
+    DLink dlink;
+    public LRUCache(int capacity) {
+        dlink = new DLink(capacity);
+    }
+    
+    public int get(int key) {
+        return dlink.get(key);
+    }
+    
+    public void put(int key, int value) {
+        dlink.put(key, value);
+    }
+    
+    private static class DLink {
+        int size;
+        Node head = null;
+        Node last = null;
+        Map<Integer, Node> map = new HashMap<>();
+        public DLink(int size) {
+            this.size = size;
+        }
+        
+        private int get(int key) {
+            Node node = map.get(key);
+            if (node == null) {
+                return -1;
+            }
+            int res = node.val;
+            moveNodeToHead(node);
+            return res;
+        }
+        
+        private void moveNodeToHead(Node node) {
             if (head == node) {
                 return;
             }
-            Node newTail;
-            if (tail == node) {
-                newTail = tail.prev;
+            Node pre = node.pre;
+            Node next = node.next;
+            pre.next = next;
+            if (next == null) {
+                last = pre;
             } else {
-                newTail = tail;
+                next.pre = pre;
             }
-            Node before = node.prev;
-            Node after = node.next;
-
-            Node newHead = node;
-            Node oldHead = head;
-
-            before.next = after;
-            if (after != null) {
-                after.prev = before;
-            }
-
-            head = newHead;
-            head.prev = null;
-            head.next = oldHead;
-            oldHead.prev = newHead;
-
-            tail = newTail;
-            tail.next = null;
+            insertHead(node);
         }
-
-        public void insertToHead(Node node) {
+        
+        private void put(int key, int value) {
+            //有则更新
+            Node node = map.get(key);
+            if (node != null) {
+                node.val = value;
+                moveNodeToHead(node);
+                return;
+            }
+            //无则插入
+            if (map.size() >= size) {//插入前先删掉最老的
+                removeLast();
+            }
+            node = new Node(key, value);
+            insertHead(node);
+        }
+        
+        private void insertHead(Node node) {
+            node.next = head;
+            node.pre = null;
             if (head != null) {
-                head.prev = node;
-                node.next = head;
-            } else {
-                tail = node;
+                head.pre = node;
+            } else {//head == null，说明是第一个，同时也是最后一个
+                last = node;
             }
             head = node;
+            map.put(node.key, node);
         }
-
-        public Node removeTail() {
-            if (tail == null) {
-                return null;
+        
+        private void removeLast() {
+            map.remove(last.key);
+            Node newLast = last.pre;
+            if (newLast == null) {//最后一个被干掉，head也没了
+                head = null;
+            } else {
+                newLast.next = null;
             }
-            Node deleted = tail;
-            tail = tail.prev;
-            if (tail != null) {
-                tail.next = null;
-            }
-            return deleted;
+            last = newLast;
         }
     }
-
-    public static class Node {
-        Node prev;
-        Node next;
-        int k;
-        int v;
-    }
-
-    public LRUCache(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public int get(int key) {
-        Node node = map.get(key);
-        if (node == null) {
-            return -1;
-        }
-        dLink.moveToHead(node);
-        return node.v;
-    }
-
-    public void put(int key, int value) {
-        Node node = map.get(key);
-        if (node != null) {
-            node.v = value;
-            dLink.moveToHead(node);
-            return;
-        }
-        node = new Node();
-        node.k = key;
-        node.v = value;
-        map.put(key, node);
-        dLink.insertToHead(node);
-
-        if (map.size() > capacity) {
-            Node deleted = dLink.removeTail();
-            if (deleted != null) {
-                map.remove(deleted.k);
-            }
+    
+    private static class Node {
+        Node pre = null;
+        Node next = null;
+        int key;
+        int val;
+        public Node(int key, int val) {
+            this.key = key;
+            this.val = val;
         }
     }
-
 }
 
 /**
