@@ -47,33 +47,19 @@
 
 // @lc code=start
 class Solution {
-    Map<Integer, Map<Integer, Integer>> mem = new HashMap<>();
     public int combinationSum4(int[] nums, int target) {
-        return bt(nums, 0, target);
-    }
-
-    public int bt(int[] nums, int sum, int target) {
-        if (sum == target) {
-            return 1;
+        //dp[0] = 1
+        //dp[i] = dp[i - nums[0]] + dp[i - nums[1]] + dp[i - nums[...]]
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                if (i - nums[j] >= 0) {
+                    dp[i] += dp[i - nums[j]];
+                }
+            }
         }
-        if (sum > target) {
-            return 0;
-        }
-        if (mem.get(sum) != null && mem.get(sum).get(target) != null) {
-            return mem.get(sum).get(target);
-        }
-        int count = 0;
-        for (int num : nums) {
-            count += bt(nums, sum + num, target);
-        }
-        if (mem.get(sum) == null) {
-            Map<Integer, Integer> map = new HashMap<>();
-            map.put(target, count);
-            mem.put(sum, map);
-        } else {
-            mem.get(sum).put(target, count);
-        }
-        return count;
+        return dp[target];
     }
 }
 // @lc code=end
