@@ -44,7 +44,7 @@ class Solution {
     public int subarraysDivByK(int[] A, int K) {
         int sum = 0;
         int count = 0;
-        Map<Integer, Integer> map = new HashMap<>();
+        int[] map = new int[K];
         //(sums[i] - sums[j]) % K == 0
         //sums[i] % K == sums[j] % K
         //i j满足要求
@@ -55,13 +55,12 @@ class Solution {
         //9 % 2 -> 1
         //所以不能直接用 %，需要使用Math.floorMod
         
-        map.put(0, 1);//自身可以满足要求
+        map[0] = 1;//自身可以满足要求
         for (int i = 0; i < A.length; i++) {
             sum += A[i];
             int mod = Math.floorMod(sum, K);
-            int c = map.getOrDefault(mod, 0);
-            count += c;
-            map.put(mod, c + 1);
+            count += map[mod];
+            map[mod]++;
         }
         return count;
     }
