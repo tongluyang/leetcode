@@ -38,18 +38,17 @@
 // @lc code=start
 class Solution {
     public int rob(int[] nums) {
-        int size = nums.length;
-        if (size == 0) {
+        if (nums.length == 0) {
             return 0;
         }
-        int[][] dp = new int[2][size];
-        dp[0][0] = 0;
-        dp[1][0] = nums[0];
+        int max1 = 0;//没偷
+        int max2 = nums[0];//偷了
         for (int i = 1; i < nums.length; i++) {
-            dp[0][i] = dp[1][i - 1];
-            dp[1][i] = (i == 1 ? dp[0][i - 1] : Math.max(dp[0][i - 1], dp[0][i - 2])) + nums[i];
+            int tmp = max1;
+            max1 = Math.max(max1, max2);//不偷这一房间，上一次偷或不偷都可以
+            max2 = tmp + nums[i];//偷这一房间，只能是上一次没偷
         }
-        return Math.max(dp[0][size - 1], dp[1][size - 1]);
+        return Math.max(max1, max2);
     }
 }
 // @lc code=end
