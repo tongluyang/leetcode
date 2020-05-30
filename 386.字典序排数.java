@@ -27,11 +27,21 @@
 class Solution {
     public List<Integer> lexicalOrder(int n) {
         List<Integer> res = new ArrayList<>();
-        for (int i = 1; i <= n; i++) {
-            res.add(i);
+        for (int i = 1; i <= 9 && i <= n; i++) {
+            gen(i, res, n);
         }
-        res.sort((a, b) -> String.valueOf(a).compareTo(String.valueOf(b)));
         return res;
+    }
+
+    private void gen(int i, List<Integer> res, int n) {
+        res.add(i);
+        for (int j = 0; j <= 9; j++) {
+            int next = i * 10 + j;
+            if (next > n) {
+                return;
+            }
+            gen(next, res, n);
+        }
     }
 }
 // @lc code=end
