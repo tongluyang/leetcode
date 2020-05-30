@@ -39,30 +39,21 @@
  */
 class Solution {
     public int largestRectangleArea(int[] heights) {
-        if (heights.length == 0) {
-            return 0;
-        }
-        int max = 0;
         Stack<Integer> stack = new Stack<>();
-        stack.push(-1);
-        for (int right = 0; right <= heights.length; right++) {
-            while (true) {
-                if (right < heights.length && (stack.peek() == -1 || heights[right] > heights[stack.peek()])) {
-                    stack.push(right);
-                    break;
-                } else {
-                    int h = heights[stack.pop()];
-                    int left = stack.peek();
-
-                    int area = h * (right - left - 1);
-
-                    max = Math.max(max, area);
-
-                    if (right == heights.length && stack.peek() == -1) {
-                        break;
-                    }
+        int max = 0;
+        int[] tmp = new int[heights.length + 2];
+        System.arraycopy(heights, 0, tmp, 1, heights.length);
+        heights = tmp;
+        for (int i = 0; i < heights.length; i++) {
+            if (!stack.isEmpty() && heights[i] < heights[stack.peek()]) {
+                while (!stack.isEmpty() && heights[stack.peek()] > heights[i]) {
+                    int idx = stack.pop();
+                    int height = heights[idx];
+                    int width = i - stack.peek() - 1;
+                    max = Math.max(max, height * width);
                 }
             }
+            stack.push(i);
         }
         return max;
     }
