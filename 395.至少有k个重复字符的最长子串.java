@@ -51,20 +51,20 @@ class Solution {
         if (res >= s.length()) {
             return 0;
         }
-        Map<Character, Integer> map = new HashMap<>();
+        int[] map = new int[26];
         for (char c : s.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
+            map[c - 'a']++;
         }
-        String regex = "";
-        for (char c : map.keySet()) {
-            if (map.get(c) < k) {
-                regex += c;
+        StringBuilder regex = new StringBuilder();
+        for (int i = 0; i < 26; i++) {
+            if (map[i] > 0 && map[i] < k) {
+                regex.append((char) ('a' + i));
             }
         }
-        if ("".equals(regex)) {
+        if (regex.length() == 0) {
             return s.length();
         }
-        String[] splits = s.split("[" + regex + "]");
+        String[] splits = s.split(regex.insert(0, '[').append(']').toString());
         for (String sub : splits) {
             int longest = longestSubstring(sub, k);
             if (longest > res) {
