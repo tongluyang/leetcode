@@ -31,22 +31,23 @@
 // @lc code=start
 class Solution {
     public int[] productExceptSelf(int[] nums) {
-        int length = nums.length;
-        int[] result = new int[length];
-        int num = 1;
-        for (int i = 0; i < length - 1; i++) {
-            result[i] = num *= nums[i];
+        int len = nums.length;
+        //left[i]为i左侧所有num的乘积
+        //right[i]为i右侧所有num的乘积
+        //可以用res作为left，nums作为right，空间O(1)
+        int[] left = new int[len];
+        int[] right = new int[len];
+        for (int i = 0; i < len; i++) {
+            left[i] = i == 0 ? 1 : left[i - 1] * nums[i - 1];
         }
-        num = 1;
-        for (int i = length - 1; i > 0; i--) {
-            nums[i] = num *= nums[i];
+        for (int i = len - 1; i >= 0; i--) {
+            right[i] = i == len - 1 ? 1 : right[i + 1] * nums[i + 1];
         }
-        result[length - 1] = result[length - 2];
-        for (int i = length - 2; i > 0; i--) {
-            result[i] = result[i - 1] * nums[i + 1];
+        int[] res = new int[len];
+        for (int i = 0; i < len; i++) {
+            res[i] = left[i] * right[i];
         }
-        result[0] = nums[1];
-        return result;
+        return res;
     }
 }
 // @lc code=end
