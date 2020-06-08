@@ -71,33 +71,36 @@
 
 // @lc code=start
 class Solution {
+    int[] f = new int[26];
     public boolean equationsPossible(String[] equations) {
-        Map<Character, Set<Character>> map = new HashMap<>();
-        for (char c = 'a'; c <= 'z'; c++) {
-            Set<Character> set = new HashSet<>();
-            set.add(c);
-            map.put(c, set);
+        for (int i = 0; i < 26; i++) {
+            f[i] = i;
         }
         for (String e : equations) {
             if (e.charAt(1) == '=') {
                 char left = e.charAt(0);
                 char right = e.charAt(3);
-                map.get(left).addAll(map.get(right));
-                for (char c : map.get(left)) {
-                    map.put(c, map.get(left));
-                }
+                merge(left - 'a', right - 'a');
             }
         }
         for (String e : equations) {
             if (e.charAt(1) == '!') {
                 char left = e.charAt(0);
                 char right = e.charAt(3);
-                if (map.get(left) == map.get(right)) {
+                if (find(left - 'a') == find(right - 'a')) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    private int find(int x) {
+        return x == f[x] ? x : (f[x] = find(f[x]));
+    }
+
+    private void merge(int x, int y) {
+        f[find(x)] = find(y);
     }
 }
 // @lc code=end
