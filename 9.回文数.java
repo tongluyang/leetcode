@@ -45,42 +45,12 @@ class Solution {
         if (x < 0) {
             return false;
         }
-
-        if (x < 10) {
-            return true;
+        int tmp = x;
+        int y = 0;
+        while (tmp > 0) {
+            y = y * 10 + (tmp % 10);
+            tmp /= 10;
         }
-
-        int tmp = 1;
-        int i = 0;
-        while (x / 10 >= tmp) {
-//            System.out.println("compare " + i);
-            if (getHigh(x, i) != getLow(x, i)) {
-                return false;
-            }
-            tmp *= 100;
-            i++;
-        }
-
-        return true;
-    }
-
-    private int getLow(int x, int i) {
-        for (int i1 = 0; i1 < i; i1++) {
-            x = x / 10;
-        }
-        return x % 10;
-    }
-
-    private int getHigh(int x, int i) {
-        int tmp = 1;
-        for (int i1 = 0; i1 < i; i1++) {
-            tmp = tmp * 10;
-        }
-
-        while (x >= tmp * 10){
-            x = x / 10;
-        }
-        return x % 10;
+        return x == y;
     }
 }
-
