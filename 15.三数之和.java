@@ -30,49 +30,28 @@
  */
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        final ArrayList<List<Integer>> lists = new ArrayList<>();
         Arrays.sort(nums);
-
-        // long count = 0;
-
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            map.put(nums[i], i);
+        }
+        List<List<Integer>> res = new ArrayList<>();
         for (int i = 0; i < nums.length - 2; i++) {
-            if (nums[i] > 0) {
-                break;
-            }
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
-            int maxIndex = nums.length - 1;
-            for (int j = i + 1; j < maxIndex; j++) {
+            for (int j = i + 1; j < nums.length - 1; j++) {
                 if (j > i + 1 && nums[j] == nums[j - 1]) {
                     continue;
                 }
-
-                for (int k = maxIndex; k > j; k--) {
-                    // count++;
-
-                    final int sum = nums[i] + nums[j] + nums[k];
-                    if (sum == 0) {
-                        final ArrayList<Integer> integers = new ArrayList<>();
-                        integers.add(nums[i]);
-                        integers.add(nums[j]);
-                        integers.add(nums[k]);
-
-//                        if (!lists.contains(integers)) {
-                            lists.add(integers);
-//                        }
-                        maxIndex = k;
-                        break;
-                    } else if (sum < 0) {
-                        break;
-                    }
+                int three = 0 - nums[i] - nums[j];
+                Integer threeIdx = map.get(three);
+                if (threeIdx != null && threeIdx > j) {
+                    res.add(Arrays.asList(nums[i], nums[j], three));
                 }
             }
         }
-
-        // System.out.println("count:" + count);
-
-        return lists;
+        return res;
     }
 }
 
