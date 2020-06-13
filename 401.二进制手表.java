@@ -48,12 +48,11 @@
 class Solution {
     public List<String> readBinaryWatch(int num) {
         List<String> res = new ArrayList<>();
-        bt(num, res, 0, 0, 0, 0);
+        bt(num, res, 0, 0, 0);
         return res;
     }
 
-    Set<String> mem = new HashSet<>();
-    private void bt(int num, List<String> res, int h, int m, int minH, int minM) {
+    private void bt(int num, List<String> res, int h, int m, int start) {
         if (h > 11) {
             return;
         }
@@ -61,22 +60,17 @@ class Solution {
             return;
         }
         if (num == 0) {
-            String time = String.format("%1$d:%2$02d", h, m);
-            if (mem.contains(time)) {
-                return;
-            }
-            mem.add(time);
-            res.add(time);
+            res.add(String.format("%1$d:%2$02d", h, m));
             return;
         }
-        for (int i = minM; i < 8; i++) {
+        for (int i = start; i < 8; i++) {
             if ((m & (1 << i)) == 0) {
-                bt(num - 1, res, h, m | (1 << i), minH, i + 1);
+                bt(num - 1, res, h, m | (1 << i), ++start);
             }
         }
-        for (int i = minH; i < 4; i++) {
+        for (int i = start - 8; i < 4; i++) {
             if ((h & (1 << i)) == 0) {
-                bt(num - 1, res, h | (1 << i), m, i + 1, minM);
+                bt(num - 1, res, h | (1 << i), m, ++start);
             }
         }
     }
