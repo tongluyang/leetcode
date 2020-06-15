@@ -40,20 +40,28 @@ class Solution {
         if (strs.length == 0) {
             return "";
         }
-        final Integer min = Arrays.stream(strs).map(String::length).min(Integer::compareTo).orElse(0);
-        for (Integer i = 0; i < min; i++) {
-            char c = 0;
-            for (String str : strs) {
-                if (c == 0) {
-                    c = str.charAt(i);
-                } else {
-                    if (c != str.charAt(i)) {
-                        return str.substring(0, i);
-                    }
+        int len = 0;
+        char cur = 0;
+        boolean finish = false;
+        while (!finish) {
+            for (int i = 0; i < strs.length; i++) {
+                String str = strs[i];
+                if (str.length() <= len) {
+                    finish = true;
+                    break;
+                }
+                if (cur == 0) {
+                    cur = str.charAt(len);
+                } else if (str.charAt(len) != cur) {
+                    finish = true;
+                    break;
+                }
+                if (i == strs.length - 1) {
+                    cur = 0;
+                    len++;
                 }
             }
         }
-        return strs[0].substring(0, min);
+        return strs[0].substring(0, len);
     }
 }
-
