@@ -32,35 +32,48 @@
  */
 class Solution {
     public boolean isPalindrome(String s) {
-        char[] cs = s.toLowerCase().toCharArray();
-        int start = 0;
-        int end = s.length() - 1;
-
-        while (start < end) {
-            char c1 = cs[start];
-            while (!((c1 >= 'a' && c1 <= 'z') || (c1 >= 'A' && c1 <= 'Z') || (c1 >= '0' && c1 <= '9'))) {
-                start++;
-                if (start == end) {
-                    return true;
-                }
-                c1 = cs[start];
+        int l = 0;
+        int r = s.length() - 1;
+        while (l < r) {
+            char a = s.charAt(l);
+            if (!isValid(a)) {
+                l++;
+                continue;
             }
-            char c2 = cs[end];
-            while (!((c2 >= 'a' && c2 <= 'z') || (c2 >= 'A' && c2 <= 'Z') || (c2 >= '0' && c2 <= '9'))) {
-                end--;
-                if (start == end) {
-                    return true;
-                }
-                c2 = cs[end];
+            char b = s.charAt(r);
+            if (!isValid(b)) {
+                r--;
+                continue;
             }
-            if (c1 != c2) {
+            a = toUpper(a);
+            b = toUpper(b);
+            if (a != b) {
                 return false;
             }
-            start++;
-            end--;
+            l++;
+            r--;
         }
-
         return true;
+    }
+    
+    private char toUpper(char c) {
+        if (c >= 'a') {
+            c -= 'a' - 'A';
+        }
+        return c;
+    }
+    
+    private boolean isValid(char c) {
+        if (c >= '0' && c <= '9') {
+            return true;
+        }
+        if (c >= 'a' && c <= 'z') {
+            return true;
+        }
+        if (c >= 'A' && c <= 'Z') {
+            return true;
+        }
+        return false;
     }
 }
 
