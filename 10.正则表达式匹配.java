@@ -73,109 +73,48 @@
  * 
  */
 class Solution {
+    
+    Boolean[][] mem;
     public boolean isMatch(String s, String p) {
-        final RuleBook ruleBook = parse(p);
-        // ruleBook.rules.forEach(System.out::println);
-
-        Set<Integer> states = new HashSet<>();
-        states.add(0);
-
-        for (char c : s.toCharArray()) {
-            states = ruleBook.nextStates(states, c);
-            // System.out.println(states);
-        }
-
-        for (Integer state : states) {
-            if (ruleBook.applies.contains(state)) {
-                return true;
-            }
-        }
-
-        return false;
+        mem = new Boolean[s.length() + 1][p.length() + 1];
+        return isMatch(s, 0, p, 0);
     }
-    public RuleBook parse(String p) {
-        p = p + "$";
-
-        final RuleBook ruleBook = new RuleBook();
-        int curState = 0;
-        for (int i = 0; i < p.length(); i++) {
-            final char c = p.charAt(i);
-
-            if (c == '*') {
-                continue;
+    
+    private boolean isMatch(String s, int i, String p, int j) {
+        if (i == s.length() && j == p.length()) {
+            return true;
+        }
+        if (i > s.length()) {//i到结尾，p还有可能是匹配0个
+            return false;
+        }
+        if (j >= p.length()) {
+            return false;
+        }
+        if (mem[i][j] != null) {
+            return mem[i][j];
+        }
+        char pc = p.charAt(j);
+        if (pc == '*') {//看继续匹配或跳过
+            return mem[i][j] = isMatch(s, i, p, j - 1) || isMatch(s, i, p, j + 1);
+        }
+        if (j + 1 < p.length() && p.charAt(j + 1) == '*') {//下一个是*，看看匹配0个是否通过
+            if (isMatch(s, i, p, j + 2)) {
+                return mem[i][j] = true;
             }
-
-            int nextState = curState + 1;
-            ruleBook.addRule(new Rule(curState, c, nextState++));
-
-            boolean hasStar = false;
-            for (int j = i + 1; j < p.length(); j++) {
-                final char next = p.charAt(j);
-                if (next == '*') {
-                    if (j == i + 1) {
-                        ruleBook.addRule(new Rule(curState + 1, c, curState + 1));
-                    }
-                    hasStar = true;
-                } else {
-                    if (hasStar) {
-                        ruleBook.addRule(new Rule(curState, next, nextState++));
-                        hasStar = false;
-                    } else {
-                        break;
-                    }
-
-                    if (j == p.length() - 1) {//最后一个了
-                        break;
-                    }
-
-                    if (p.charAt(j + 1) != '*') {
-                        break;
-                    }
-                }
+        }
+        if (i == s.length()) {
+            return mem[i][j] = false;
+        }
+        char sc = s.charAt(i);
+        if (pc >= 'a' && pc <= 'z') {
+            if (pc == sc) {
+                return mem[i][j] = isMatch(s, i + 1, p, j + 1);
             }
-            curState++;
+            return mem[i][j] = false;
+        } else if (pc == '.') {
+            return mem[i][j] = isMatch(s, i + 1, p, j + 1);
         }
-    //    ruleBook.rules.forEach(System.out::println);
-        return ruleBook;
-    }
-
-
-    class RuleBook {
-        List<Rule> rules = new ArrayList<>();
-        Set<Integer> applies = new HashSet<>();
-
-        RuleBook addRule(Rule rule) {
-            this.rules.add(rule);
-            if (rule.input == '$') {
-                applies.add(rule.curState);
-            }
-            return this;
-        }
-
-        Set<Integer> nextStates(Set<Integer> states, char c) {
-            return rules.stream().filter(rule -> states.contains(rule.curState) && (rule.input == c || rule.input == '.')).map(rule -> rule.nextState).collect(Collectors.toSet());
-        }
-    }
-
-    class Rule {
-        int curState;
-        char input;
-        int nextState;
-
-        public Rule(int curState, char input, int nextState) {
-            this.curState = curState;
-            this.input = input;
-            this.nextState = nextState;
-        }
-
-        @Override
-        public String toString() {
-            return "Rule{" +
-                    "curState=" + curState +
-                    ", input=" + input +
-                    ", nextState=" + nextState +
-                    '}';
-        }
+        return mem[i][j] = false;
     }
 }
 
