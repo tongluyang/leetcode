@@ -35,16 +35,11 @@
 class Solution {
     public int[][] reconstructQueue(int[][] people) {
         Arrays.sort(people, (a, b) -> a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]);
-        int count = 0;
-        int[][] res = new int[people.length][2];
+        List<int[]> list = new ArrayList(people.length);
         for (int[] p : people) {
-            for (int i = count; i > p[1]; i--) {
-                res[i] = res[i - 1];
-            }
-            res[p[1]] = p;
-            count++;
+            list.add(p[1], p);
         }
-        return res;
+        return list.toArray(new int[people.length][2]);
     }
 }
 // @lc code=end
