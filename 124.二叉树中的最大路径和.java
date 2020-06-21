@@ -51,40 +51,25 @@
  * }
  */
 class Solution {
+    int max = Integer.MIN_VALUE;
     public int maxPathSum(TreeNode root) {
-        int[] max = {Integer.MIN_VALUE};
-        maxPathSum(root, max);
-        return max[0];
+        helper(root);
+        return max;
     }
 
-    public int maxPathSum(TreeNode root, int[] max) {
+    private int helper(TreeNode root) {
         if (root == null) {
-            return Integer.MIN_VALUE;
+            return 0;
         }
-        int left = maxPathSum(root.left, max);
-        int cur = root.val;
-        int right = maxPathSum(root.right, max);
-
-        if (cur < 0) {
-            if (cur/2 + left/2 < 0 && cur/2 + right/2 < 0) {
-                max[0] = Math.max(max[0], Math.max(Math.max(left, right), cur));
-                return Integer.MIN_VALUE;
-            }
-            if (cur/2 + left/2 < 0) {
-                max[0] = Math.max(max[0], right);
-                return cur + right;
-            }
-            if (cur/2 + right/2 < 0) {
-                max[0] = Math.max(max[0], left);
-                return cur + left;
-            }
+        int leftMax = helper(root.left);
+        int rightMax = helper(root.right);
+        if (leftMax < 0) {
+            leftMax = 0;
         }
-
-        left = Math.max(0, left);
-        right = Math.max(0, right);
-
-        max[0] = Math.max(max[0], left + cur + right);
-        return Math.max(cur + left, cur + right);
+        if (rightMax < 0) {
+            rightMax = 0;
+        }
+        max = Math.max(max, root.val + leftMax + rightMax);
+        return root.val + Math.max(leftMax, rightMax);
     }
 }
-
