@@ -30,48 +30,34 @@
  */
 class Solution {
     public String addBinary(String a, String b) {
-        if (a.length() == 0) {
-            return b;
-        }
-        if (b.length() == 0) {
-            return a;
-        }
-        StringBuilder result = new StringBuilder();
+        StringBuilder res = new StringBuilder();
+        int i = a.length() - 1;
+        int j = b.length() - 1;
         char flag = '0';
-        int max = Math.max(a.length(), b.length());
-        a = lpad0(a, max);
-        b = lpad0(b, max);
-        for (int i = max - 1; i >= 0; i--) {
-            char x = a.charAt(i);
-            char y = b.charAt(i);
-            char r = '1';
-
-            if (x == '1' && y == '1') {
-                r = flag;
-                flag = '1';
-            } else if (x == '0' && y == '0') {
-                r = flag;
+        while (i >= 0 || j >= 0) {
+            char ca = i < 0 ? '0' : a.charAt(i);
+            char cb = j < 0 ? '0' : b.charAt(j);
+            if (ca == '0' && cb == '0') {
+                res.insert(0, flag);
                 flag = '0';
-            } else if (flag == '1') {
-                r = '0';
+            } else if (ca == '1' && cb == '1') {
+                res.insert(0, flag);
+                flag = '1';
+            } else {
+                if (flag == '0') {
+                    res.insert(0, '1');
+                } else {
+                    res.insert(0, '0');
+                    flag = '1';
+                }
             }
-
-            result.insert(0, r);
+            i--;
+            j--;
         }
         if (flag == '1') {
-            result.insert(0, flag);
+            res.insert(0, flag);
         }
-        return result.toString();
-    }
-
-    public String lpad0(String str, int count) {
-        StringBuilder strBuilder = new StringBuilder(str);
-        int rem = count - strBuilder.length();
-        for (int i = 0; i < rem; i++) {
-            strBuilder.insert(0, 0);
-        }
-        str = strBuilder.toString();
-        return str;
+        return res.toString();
     }
 }
 
