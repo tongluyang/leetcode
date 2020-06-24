@@ -31,27 +31,28 @@
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
         Arrays.sort(nums);
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            map.put(nums[i], i);
-        }
         List<List<Integer>> res = new ArrayList<>();
         for (int i = 0; i < nums.length - 2; i++) {
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
+            int k = nums.length - 1;
             for (int j = i + 1; j < nums.length - 1; j++) {
                 if (j > i + 1 && nums[j] == nums[j - 1]) {
                     continue;
                 }
-                int three = 0 - nums[i] - nums[j];
-                Integer threeIdx = map.get(three);
-                if (threeIdx != null && threeIdx > j) {
-                    res.add(Arrays.asList(nums[i], nums[j], three));
+                
+                while (k > j && nums[i] + nums[j] + nums[k] > 0) {
+                    k--;
+                }
+                if (j >= k) {
+                    break;
+                }
+                if (nums[i] + nums[j] + nums[k] == 0) {
+                    res.add(Arrays.asList(nums[i], nums[j], nums[k]));
                 }
             }
         }
         return res;
     }
 }
-
