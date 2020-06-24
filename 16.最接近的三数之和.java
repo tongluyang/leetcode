@@ -24,25 +24,36 @@
  */
 class Solution {
     public int threeSumClosest(int[] nums, int target) {
-        Integer result = null;
-        for (int i = 0; i < nums.length - 2; i++) {
-            for (int j = i + 1; j < nums.length - 1; j++) {
-                for (int k = j + 1; k < nums.length; k++) {
-                    final int sum = nums[i] + nums[j] + nums[k];
-                    if (sum == target) {
-                        return target;
-                    } else {
-                        if (result == null) {
-                            result = sum;
-                        } else {
-                            result = Math.abs(result - target) > Math.abs(sum - target) ? sum : result;
-                        }
+        Arrays.sort(nums);
+        int len = nums.length;
+        int res = nums[0] + nums[1] + nums[2];
+        for (int i = 0; i < len - 2; i++) {
+            if (i != 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int k = len - 1;
+            for (int j = i + 1; j < len - 1; j++) {
+                if (j != i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                while (j < k && nums[i] + nums[j] + nums[k] > target) {
+                    if (nums[i] + nums[j] + nums[k] - target < Math.abs(res - target)) {
+                        res = nums[i] + nums[j] + nums[k];
                     }
+                    k--;
+                }
+                if (j >= k) {
+                    break;
+                }
+                if (nums[i] + nums[j] + nums[k] == target) {
+                    return target;
+                }
+                if (target - (nums[i] + nums[j] + nums[k]) < Math.abs(res - target)) {
+                    res = nums[i] + nums[j] + nums[k];
                 }
             }
         }
-
-        return result;
+        return res;
     }
 }
 
