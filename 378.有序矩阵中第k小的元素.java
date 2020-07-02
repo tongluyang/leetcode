@@ -40,24 +40,34 @@
 // @lc code=start
 class Solution {
     public int kthSmallest(int[][] matrix, int k) {
-        //多指针，未利用每列升序这一信息
-        int row = matrix.length;
-        int[] p = new int[row];
-        while (true) {
-            int min = Integer.MAX_VALUE;
-            int minRow = -1;
-            for (int i = 0; i < row; i++) {
-                if (p[i] < row && matrix[i][p[i]] < min) {
-                    min = matrix[i][p[i]];
-                    minRow = i;
-                }
+        int n = matrix.length;
+        int min = matrix[0][0];
+        int max = matrix[n - 1][n - 1];
+        while (min < max) {
+            int mid = (min + max) >>> 1;
+            if (count(matrix, mid) >= k) {//小于等于mid的数量，大于k，k在左半部分
+                max = mid;
+            } else {
+                min = mid + 1;
             }
-            if (k == 1) {
-                return min;
-            }
-            p[minRow]++;
-            k--;
         }
+        return min;
+    }
+    
+    private int count(int[][] matrix, int value) {
+        int n = matrix.length;
+        int i = n - 1;
+        int j = 0;
+        int count = 0;
+        while (i >= 0 && j < n) {
+            if (matrix[i][j] <= value) {
+                count += i + 1;
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return count;
     }
 }
 // @lc code=end
