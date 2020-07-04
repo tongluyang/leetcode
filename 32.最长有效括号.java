@@ -32,47 +32,32 @@
  */
 class Solution {
     public int longestValidParentheses(String s) {
-        Stack<Integer> left = new Stack<>();
-        Map<Integer, Integer> map = new HashMap<>();
-
+        int ans = 0;
+        Stack<Integer> stack = new Stack<>();
+        int len = 0;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if (c == '(') {
-                left.push(i);
-                map.put(i, 0);
-            } else if (c == ')') {
-                if (left.empty()) {
-//                    max = max > result ? max : result;
-//                    result = 0;
+                stack.push(i - len);
+                len = 0;
+            } else {
+                if (stack.size() == 0) {
+                    if (ans < len) {
+                        ans = len;
+                    }
+                    len = 0;
                 } else {
-                    Integer startIndex = left.pop();
-//                    result = result + 2;
-                    map.put(startIndex, i - startIndex + 1);
+                    int j = stack.pop();
+                    len = i - j + 1;
+                    if (ans < len) {
+                        ans = len;
+                    }
                 }
             }
         }
-
-
-        List<Integer> reducedList = new ArrayList<>();
-
-        for (Integer index : map.keySet()) {
-            if (reducedList.contains(index)) {
-                continue;
-            }
-            while (true) {
-                Integer value = map.get(index);
-
-                if (value != 0 && map.keySet().contains(index + value) && map.get(index + value) > 0) {
-                    map.put(index, value + map.get(index + value));
-                    reducedList.add(index + value);
-                } else {
-                    break;
-                }
-            }
+        if (ans < len) {
+            ans = len;
         }
-
-        return map.values().stream().max(Integer::compareTo).orElse(0);
-
+        return ans;
     }
 }
-
