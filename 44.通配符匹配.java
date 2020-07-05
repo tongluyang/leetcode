@@ -73,39 +73,36 @@
  */
 class Solution {
     public boolean isMatch(String s, String p) {
-        Boolean[][] mem = new Boolean[s.length() + 1][p.length() + 1];
-        return bt(s, p, 0, 0, mem);
-    }
-
-    public boolean bt(String s, String p, int si, int pi, Boolean[][] mem) {
-        if (s.length() - 1 < si && p.length() - 1 < pi) {//字符串和匹配字符串都正好结束，正确匹配
-            return true;
-        }
-        if (p.length() == pi) {//匹配字符串超长，匹配失败
-            return false;
-        }
-        if (mem[si][pi] != null) {//已经计算，直接返回
-            return mem[si][pi];
-        }
-        
-        boolean result = false;
-        if (s.length() - 1 >= si) {//字符串未匹配完
-            if (p.charAt(pi) == '*') {
-                if (bt(s, p, si + 1, pi, mem)) {//贪婪，先吃掉字符串，成功后结束，否则再吐出，匹配字符串加一尝试
-                    result = true;
-                } else {
-                    result = bt(s, p, si, pi + 1, mem);
+        int lenS = s.length();
+        int lenP = p.length();
+        boolean[][] dp = new boolean[lenS + 1][lenP + 1];
+        for (int i = 0; i <= lenS; i++) {
+            for (int j = 0; j <= lenP; j++) {
+                if (i == 0 && j == 0) {//都是空
+                    dp[i][j] = true;
+                    continue;
                 }
-            } else if (s.charAt(si) == p.charAt(pi) || p.charAt(pi) == '?') {
-                result = bt(s, p, si + 1, pi + 1, mem);
+                if (j == 0) {//pattern空，string不空，肯定不匹配
+                    dp[i][j] = false;
+                    continue;
+                }
+                char cp = p.charAt(j - 1);
+                if (cp == '*') {
+                    boolean flag = false;
+                    for (int k = 0; k <= i; k++) {
+                        if (dp[k][j - 1]) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    dp[i][j] = flag;
+                } else if (cp == '?') {
+                    dp[i][j] = i == 0 ? false : dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = i == 0 ? false : (cp == s.charAt(i - 1) && dp[i - 1][j - 1]);
+                }
             }
-        } else if (p.charAt(pi) == '*') {//字符串已匹配完，但匹配字符是*，继续
-            result = bt(s, p, si, pi + 1, mem);
         }
-
-        mem[si][pi] = result;
-        
-        return result;
+        return dp[lenS][lenP];
     }
 }
-
