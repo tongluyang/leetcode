@@ -44,27 +44,28 @@
  */
 class Solution {
     public int uniquePathsWithObstacles(int[][] obstacleGrid) {
-        if (obstacleGrid.length == 0) {
+        int m = obstacleGrid.length;
+        if (m == 0) {
             return 0;
         }
-        boolean flag = false;//第一行有障碍物
-        for (int row = 0; row < obstacleGrid.length; row++) {
-            for (int col = 0; col < obstacleGrid[0].length; col++) {
-                if (obstacleGrid[row][col] == 1) {
-                    obstacleGrid[row][col] = 0;
-                    if (row == 0) {
-                        flag = true;
-                    }
+        int n = obstacleGrid[0].length;
+        if (n == 0) {
+            return 0;
+        }
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (obstacleGrid[i - 1][j - 1] == 1) {
+                    dp[i][j] = 0;
                     continue;
                 }
-                if (row == 0) {
-                    obstacleGrid[row][col] = flag ? 0 : 1;//第一行有障碍物，后面不可达
-                } else {
-                    obstacleGrid[row][col] = obstacleGrid[row - 1][col] + (col == 0 ? 0 : obstacleGrid[row][col - 1]);
+                if (i == 1 && j == 1) {
+                    dp[i][j] = 1;
+                    continue;
                 }
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
             }
         }
-        return obstacleGrid[obstacleGrid.length - 1][obstacleGrid[0].length - 1];
+        return dp[m][n];
     }
 }
-
