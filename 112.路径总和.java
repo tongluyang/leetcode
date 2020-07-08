@@ -46,20 +46,10 @@ class Solution {
         if (root == null) {
             return false;
         }
-        return hasPathSum(root, 0, sum);
-    }
-
-    private boolean hasPathSum(TreeNode root, int sum, int targetSum) {
-        if (root.left == null && root.right == null) {
-            return sum + root.val == targetSum;
-        } else if (root.left == null) {
-            return hasPathSum(root.right, sum + root.val, targetSum);
-        } else if (root.right == null) {
-            return hasPathSum(root.left, sum + root.val, targetSum);
-        } else {
-            return hasPathSum(root.left, sum + root.val, targetSum) 
-                    || hasPathSum(root.right, sum + root.val, targetSum);
+        sum -= root.val;
+        if (root.left == null && root.right == null) {//叶子节点
+            return sum == 0;
         }
+        return hasPathSum(root.left, sum) || hasPathSum(root.right, sum);
     }
 }
-
