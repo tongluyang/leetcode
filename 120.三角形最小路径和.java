@@ -34,30 +34,19 @@
  */
 class Solution {
     public int minimumTotal(List<List<Integer>> triangle) {
-        int size = triangle.size();
-        int[] dp = new int[size];
-        int min = 0;
-        for (int i = 0; i < size; i++) {
-            min = Integer.MAX_VALUE;
-            for (int j = i; j >= 0; j--) {
-                List<Integer> integers = triangle.get(i);
-                Integer integer = integers.get(j);
-
-                if (i == 0) {
-                    dp[j] = integer;
-                } else {
-                    if (j == 0) {//第一个
-                        dp[j] = integer + dp[j];
-                    } else if (j == i) {//最后一个
-                        dp[j] = integer + dp[j - 1];
-                    } else {
-                        dp[j] = integer + Math.min(dp[j], dp[j - 1]);
-                    }
+        if (triangle.size() == 0) {
+            return 0;
+        }
+        int i = triangle.size() - 1;
+        for (; i >= 0; i--) {
+            List<Integer> row = triangle.get(i);
+            if (i > 0) {
+                List<Integer> pre = triangle.get(i - 1);
+                for (int j = 0; j < pre.size(); j++) {
+                    pre.set(j, pre.get(j) + Math.min(row.get(j), row.get(j + 1)));
                 }
-                min = Math.min(min, dp[j]);
             }
         }
-        return min;
+        return triangle.get(0).get(0);
     }
 }
-
