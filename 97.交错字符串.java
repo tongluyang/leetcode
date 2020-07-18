@@ -29,38 +29,23 @@
  */
 class Solution {
     public boolean isInterleave(String s1, String s2, String s3) {
-        if (s1.length() + s2.length() != s3.length()) {
+        int l1 = s1.length();
+        int l2 = s2.length();
+        if (l1 + l2 != s3.length()) {
             return false;
         }
-
-        char[] c1 = s1.toCharArray();
-        char[] c2 = s2.toCharArray();
-        char[] c3 = s3.toCharArray();
-
-        return check(c1, c2, c3, 0, 0, 0, new Boolean[c1.length + 1][c2.length + 1]);
-    }
-
-    private boolean check(char[] c1, char[] c2, char[] c3, int a, int b, int x, Boolean[][] mem) {
-        if (x >= c3.length) {
-            return true;
-        }
-        if (mem[a][b] != null) {
-            return mem[a][b];
-        }
-        if (a < c1.length && c3[x] == c1[a]) {
-            boolean flag = check(c1, c2, c3, a + 1, b, x + 1, mem);
-            mem[a][b] = flag;
-            if (flag) {
-                return true;
+        boolean[][] dp = new boolean[l1 + 1][l2 + 1];
+        for (int i = 0; i <= l1; i++) {
+            for (int j = 0; j <= l2; j++) {
+                if (i == 0 && j == 0) {
+                    dp[0][0] = true;
+                    continue;
+                }
+                dp[i][j] = (i > 0 && dp[i - 1][j] && s3.charAt(i + j - 1) == s1.charAt(i - 1)) 
+                        || (j > 0 && dp[i][j - 1] && s3.charAt(i + j - 1) == s2.charAt(j - 1));
             }
         }
-        if (b < c2.length && c3[x] == c2[b]) {
-            boolean flag = check(c1, c2, c3, a, b + 1, x + 1, mem);
-            mem[a][b] = flag;
-            return flag;
-        }
-        mem[a][b] = false;
-        return false;
+        return dp[l1][l2];
     }
 }
 
