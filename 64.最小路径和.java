@@ -32,24 +32,30 @@
  */
 class Solution {
     public int minPathSum(int[][] grid) {
-        if (grid.length == 0) {
+        int m = grid.length;
+        if (m == 0) {
             return 0;
         }
-        for (int row = 0; row < grid.length; row++) {
-            for (int col = 0; col < grid[0].length; col++) {
-                if (row > 0 && col > 0) {
-                    grid[row][col] = grid[row][col] + Math.min(
-                            grid[row - 1][col],
-                            grid[row][col - 1]
-                        );
-                } else if (row > 0) {
-                    grid[row][col] = grid[row][col] + grid[row - 1][col];
-                } else if (col > 0) {
-                    grid[row][col] = grid[row][col] + grid[row][col - 1];
+        int n = grid[0].length;
+        if (n == 0) {
+            return 0;
+        }
+        int[] dp = new int[n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int min = 0;
+                if (i == 0 && j == 0) {
+                    // do nothing
+                } else if (i == 0) {//第一行，只能从左边来
+                    min = dp[j - 1];
+                } else if (j == 0) {//第一列，只能从上边来
+                    min = dp[j];
+                } else {
+                    min = Math.min(dp[j], dp[j - 1]);
                 }
+                dp[j] = min + grid[i][j];
             }
         }
-        return grid[grid.length - 1][grid[0].length - 1];
+        return dp[n - 1];
     }
 }
-
