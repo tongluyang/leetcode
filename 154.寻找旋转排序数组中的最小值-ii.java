@@ -42,13 +42,19 @@
 
 // @lc code=start
 class Solution {
-    public int findMin(int[] nums) {
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i - 1] > nums[i]) {
-                return nums[i];
-            }
+    public int minArray(int[] numbers) {
+        return helper(numbers, 0, numbers.length - 1);
+    }
+    
+    private int helper(int[] nums, int i, int j) {
+        if (i == j) {
+            return nums[i];
         }
-        return nums[0];
+        if (nums[i] < nums[j]) {
+            return nums[i];
+        }
+        int mid = (i + j) >>> 1;
+        return Math.min(helper(nums, i, mid), helper(nums, mid + 1, j));
     }
 }
 // @lc code=end
