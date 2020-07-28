@@ -45,21 +45,6 @@ class Solution {
         if (root == null) {
             return 0;
         }
-        int[] maxDepth = {1};
-        maxDepth(maxDepth, 1, root);
-        return maxDepth[0];
-    }
-
-    private void maxDepth(int[] maxDepth, int depth, TreeNode root) {
-        if (root.left != null) {
-            maxDepth(maxDepth, depth + 1, root.left);
-        }
-        if (root.right != null) {
-            maxDepth(maxDepth, depth + 1, root.right);
-        }
-        if (root.left == null && root.right == null) {
-            maxDepth[0] = Math.max(maxDepth[0], depth);
-        }
+        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
     }
 }
-
