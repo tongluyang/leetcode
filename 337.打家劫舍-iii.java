@@ -59,32 +59,27 @@
  * }
  */
 class Solution {
+    Map<TreeNode, Integer> mem = new HashMap<>();
     public int rob(TreeNode root) {
-        return Math.max(rob(root, true), rob(root, false));
-    }
-
-    Map<TreeNode, Integer[]> mem = new HashMap<>();
-    private int rob(TreeNode root, boolean isRob) {
         if (root == null) {
             return 0;
         }
-        if (mem.get(root) != null && mem.get(root)[isRob ? 1 : 0] != null) {
-            return mem.get(root)[isRob ? 1 : 0];
+        if (mem.get(root) != null) {
+            return mem.get(root);
         }
-        Integer[] tmp = mem.computeIfAbsent(root, k -> new Integer[2]);
-        if (isRob) {
-            int res = root.val + rob(root.left, false) + rob(root.right, false);
-            tmp[1] = res;
-            return res;
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        int s1 = root.val;
+        if (left != null) {
+            s1 += rob(left.left) + rob(left.right);
         }
-        int res = Math.max(Math.max(
-                                rob(root.left, true) + rob(root.right, true),
-                                rob(root.left, false) + rob(root.right, false)),
-                            Math.max(
-                                rob(root.left, true) + rob(root.right, false),
-                                rob(root.left, false) + rob(root.right, true)));
-        tmp[0] = res;               
-        return res;
+        if (right != null) {
+            s1 += rob(right.left) + rob(right.right);
+        }
+        int s2 = rob(left) + rob(right);
+        int max = Math.max(s1, s2);
+        mem.put(root, max);
+        return max;
     }
 }
 // @lc code=end
