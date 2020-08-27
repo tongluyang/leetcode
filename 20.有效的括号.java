@@ -58,20 +58,25 @@ class Solution {
     public boolean isValid(String s) {
         Stack<Character> stack = new Stack<>();
         for (char c : s.toCharArray()) {
-            if (c == 40 || c == 91 || c == 123) {
+            if (c == '(' || c == '[' || c == '{') {
                 stack.push(c);
             } else {
-                if (stack.empty()) {
+                if (stack.isEmpty()) {
                     return false;
                 }
-                Character pop = stack.pop();
-
-                if (Math.abs(c - pop) > 2) {
+                char x = stack.pop();
+                if (c == ')' && x != '(') {
+                    return false;
+                }
+                if (c == ']' && x != '[') {
+                    return false;
+                }
+                if (c == '}' && x != '{') {
                     return false;
                 }
             }
         }
-        return stack.empty();
+        return stack.isEmpty();
     }
 }
 
