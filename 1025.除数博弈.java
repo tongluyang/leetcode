@@ -58,16 +58,7 @@
 // @lc code=start
 class Solution {
     public boolean divisorGame(int N) {
-        boolean[] dp = new boolean[N + 1];
-        for (int i = 2; i <= N; i++) {
-            for (int x = 1; x < i; x++) {
-                if (i % x == 0 && !dp[i - x]) {
-                    dp[i] = true;
-                    break;
-                }
-            }
-        }
-        return dp[N];
+        return N % 2 == 0;
     }
 }
 // @lc code=end
