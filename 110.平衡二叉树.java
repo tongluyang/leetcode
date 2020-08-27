@@ -63,26 +63,15 @@ class Solution {
         if (root == null) {
             return true;
         }
-        return isBalanced(root, new int[]{0});
+        return isBalanced(root.left) && isBalanced(root.right) 
+            && Math.abs(height(root.left) - height(root.right)) <= 1;
     }
 
-    private boolean isBalanced(TreeNode root, int[] depth) {
-        int[] l = {0};
-        int[] r = {0};
-        if (root.left != null) {
-            if (!isBalanced(root.left, l)) {
-                return false;
-            }
+    private int height(TreeNode root) {
+        if (root == null) {
+            return 0;
         }
-
-        if (root.right != null) {
-            if (!isBalanced(root.right, r)) {
-                return false;
-            }
-        }
-
-        depth[0] = Math.max(l[0], r[0]) + 1;
-        return Math.abs(l[0] - r[0]) <= 1;
+        return Math.max(height(root.left), height(root.right)) + 1;
     }
 }
 
