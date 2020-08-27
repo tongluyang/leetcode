@@ -46,15 +46,18 @@ class Solution {
         if (root == null) {
             return 0;
         }
-        if (root.left == null && root.right == null) {
+        int l = minDepth(root.left);
+        int r = minDepth(root.right);
+        if (l == 0 && r == 0) {
             return 1;
-        } else if (root.left == null) {
-            return minDepth(root.right) + 1;
-        } else if (root.right == null) {
-            return minDepth(root.left) + 1;
-        } else {
-            return Math.min(minDepth(root.left), minDepth(root.right)) + 1;
         }
+        if (l == 0) {
+            return r + 1;
+        }
+        if (r == 0) {
+            return l + 1;
+        }
+        return Math.min(l, r) + 1;
     }
 }
 
