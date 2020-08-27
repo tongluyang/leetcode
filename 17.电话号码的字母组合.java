@@ -30,40 +30,23 @@
  * 
  */
 class Solution {
+    List<String> ans = new ArrayList<>();
+    String[] strs = new String[]{"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
     public List<String> letterCombinations(String digits) {
-        Map<Integer, String> map = new HashMap<>();
-        map.put(2, "abc");
-        map.put(3, "def");
-        map.put(4, "ghi");
-        map.put(5, "jkl");
-        map.put(6, "mno");
-        map.put(7, "pqrs");
-        map.put(8, "tuv");
-        map.put(9, "wxyz");
-
-        List<String> strings = new ArrayList<>();
-
-        if (digits == null || digits.length() == 0) {
-            return strings;
+        if (digits.length() == 0) {
+            return ans;
         }
-
-        strings.add("");
-        for (char c : digits.toCharArray()) {
-            final String s = map.get(c - 48);
-            strings = join(strings, s.toCharArray());
-        }
-
-        return strings;
+        bt(0, digits, new StringBuilder());
+        return ans;
     }
 
-    public List<String> join(List<String> ss, char[] cs) {
-        final ArrayList<String> list = new ArrayList<>();
-        for (String s : ss) {
-            for (char c : cs) {
-                list.add(String.join("", s, String.valueOf(c)));
-            }
+    private void bt(int idx, String digits, StringBuilder str) {
+        if (digits.length() == idx) {
+            ans.add(str.toString());
+            return;
         }
-        return list;
+        for (char c : strs[digits.charAt(idx) - '2'].toCharArray()) {
+            bt(idx + 1, digits, new StringBuilder(str).append(c));
+        }
     }
 }
-
