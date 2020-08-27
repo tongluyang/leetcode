@@ -53,28 +53,20 @@ class Solution {
         if (head == null) {
             return null;
         }
-        ListNode fast = head;
         ListNode slow = head;
-        ListNode pre = null;
-
-        while (true) {
-            if (fast.next == null || fast.next.next == null) {
-                break;
-            }
+        ListNode fast = head;
+        ListNode end = null;
+        while (fast != null && fast.next != null) {
             fast = fast.next.next;
-            pre = slow;
+            end = slow;
             slow = slow.next;
         }
-
+        if (end != null) {
+            end.next = null;
+        }
         TreeNode root = new TreeNode(slow.val);
-
-        if (pre != null) {
-            pre.next = null;
-            root.left = sortedListToBST(head);
-        }
-        if (slow.next != null) {
-            root.right = sortedListToBST(slow.next);
-        }
+        root.left = sortedListToBST(end == null ? null : head);
+        root.right = sortedListToBST(slow.next);
         return root;
     }
 }
