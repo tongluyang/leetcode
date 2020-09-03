@@ -42,38 +42,51 @@
  * 
  */
 class Solution {
+    List<List<String>> allAns = new ArrayList<>();
     public List<List<String>> solveNQueens(int n) {
-        List<List<String>> result = new ArrayList<>();
-        char[][] single = new char[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                single[i][j] = '.';
-            }
-        }
-        solveNQueens(result, single, n, 0);
-        return result;
+        bt(0, 0, n, new ArrayList<>());
+        return allAns;
     }
-    public void solveNQueens(List<List<String>> result, char[][] single, int n, int row) {
-        if (n < row + 1) {
-            List<String> s = new ArrayList<>();
-            for (char[] chars : single) {
-                s.add(String.valueOf(chars));
-            }
-            result.add(s);
-            return;
-        }
 
-        for (int i = 0; i < n; i++) {
-            boolean flag = true;
-            for (int j = 0; j < row; j++) {
-                flag = flag && single[j][i] == '.' && (i + (row - j) >= n || single[j][i + (row - j)] == '.') && (i - (row - j) < 0 || single[j][i - (row - j)] == '.');
-            }
-            if (flag) {
-                single[row][i] = 'Q';
-                solveNQueens(result, single, n, row + 1);
-                single[row][i] = '.';
-            }
+    private boolean bt(int i, int j, int n, List<String> ans) {
+        if (i == n) {
+            allAns.add(new ArrayList<>(ans));
+            return true;
         }
+        if (i >= n || j < 0 || j >= n) {
+            return false;
+        }
+        if (check(j, ans)) {
+            ans.add(buildRow(j, n));
+            bt(i + 1, 0, n, ans);
+            ans.remove(ans.size() - 1);
+        }
+        return bt(i, j + 1, n, ans);
+    }
+
+    private String buildRow(int j, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(i == j ? 'Q' : '.');
+        }
+        return sb.toString();
+    }
+
+    private boolean check(int j, List<String> ans) {
+        int offset = ans.size();
+        for (String row : ans) {
+            if (row.charAt(j) == 'Q') {
+                return false;
+            }
+            if (j + offset < row.length() && row.charAt(j + offset) == 'Q') {//右上角
+                return false;
+            }
+            if (j - offset >= 0 && row.charAt(j - offset) == 'Q') {//左上角
+                return false;
+            }
+            offset--;
+        }
+        return true;
     }
 }
 
