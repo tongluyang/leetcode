@@ -30,25 +30,24 @@
  * 
  */
 class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
     public List<List<Integer>> combine(int n, int k) {
-        List<List<Integer>> result = new ArrayList<>();
-
-        combine(result, new ArrayList<>(), n, k);
-
-        return result;
+        bt(0, k, 0, n, new ArrayList<>());
+        return ans;
     }
 
-    public void combine(List<List<Integer>> result, List<Integer> single, int n, int k) {
-        if (single.size() == k) {
-            result.add(new ArrayList<>(single));
+    private void bt(int count, int k, int last, int n, List<Integer> list) {
+        if (count == k) {
+            ans.add(new ArrayList<>(list));
             return;
         }
-
-        for (int i = single.isEmpty() ? 1 : single.get(single.size() - 1) + 1; i <= n; i++) {
-            single.add(i);
-            combine(result, single, n, k);
-            single.remove(single.size() - 1);
+        if (n - last < k - count) {
+            return;
         }
+        list.add(last + 1);
+        bt(count + 1, k, last + 1, n, list);
+        list.remove(list.size() - 1);
+        bt(count, k, last + 1, n, list);
     }
 }
 
