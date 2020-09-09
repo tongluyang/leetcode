@@ -46,32 +46,28 @@
  * 
  */
 class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-
-        List<List<Integer>> result = new ArrayList<>();
-        List<Integer> list = new ArrayList<>();
-        bt(result, list, candidates, 0, 0, target);
-
-        return result;
+        Arrays.sort(candidates);
+        bt(0, target, new ArrayList<>(), candidates, 0);
+        return ans;
     }
 
-    public void bt(List<List<Integer>> result, List<Integer> list, int[] candidates, int startIndex, int sum, int target) {
+    private void bt(int sum, int target, List<Integer> list, int[] candidates, int i) {
         if (sum == target) {
-            result.add(list);
+            ans.add(new ArrayList<>(list));
             return;
         }
-
+        if (i >= candidates.length) {
+            return;
+        }
         if (sum > target) {
             return;
         }
-
-        for (int i = startIndex; i < candidates.length; i++) {
-            int candidate = candidates[i];
-            ArrayList<Integer> integers = new ArrayList<>(list);
-            integers.add(candidate);
-            bt(result, integers, candidates, i, sum + candidate, target);
-        }
-
+        list.add(candidates[i]);
+        bt(sum + candidates[i], target, list, candidates, i);
+        list.remove(list.size() - 1);
+        bt(sum, target, list, candidates, i + 1);
     }
 }
 
