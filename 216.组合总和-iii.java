@@ -38,26 +38,24 @@
 
 // @lc code=start
 class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
     public List<List<Integer>> combinationSum3(int k, int n) {
-        List<List<Integer>> result = new ArrayList<>();
-        combinationSum3(result, new ArrayList<>(), k, n, 1, 0, 0);
-        return result;
+        bt(0, n, 1, new ArrayList<>(), k);
+        return ans;
     }
 
-    private void combinationSum3(List<List<Integer>> result, List<Integer> single, int k, int n, int start, int count, int sum) {
-        if (count == k - 1) {
-            int rem = n - sum;
-            if (rem >= start && rem <= 9) {
-                single.add(rem);
-                result.add(single);
-            }
+    private void bt(int sum, int n, int i, List<Integer> list, int k) {
+        if (sum == n && list.size() == k) {
+            ans.add(new ArrayList<>(list));
             return;
         }
-        for (int i = start; i <= 9; i++) {
-            List<Integer> list = new ArrayList<>(single);
-            list.add(i);
-            combinationSum3(result, list, k, n, i + 1, count + 1, sum + i);
+        if (sum > n || i > n || i > 9) {
+            return;
         }
+        list.add(i);
+        bt(sum + i, n, i + 1, list, k);
+        list.remove(list.size() - 1);
+        bt(sum, n, i + 1, list, k);
     }
 }
 // @lc code=end
