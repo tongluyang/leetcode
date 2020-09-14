@@ -39,23 +39,15 @@
  * }
  */
 class Solution {
+    List<Integer> ans = new ArrayList<>();
     public List<Integer> inorderTraversal(TreeNode root) {
-        ArrayList<Integer> result = new ArrayList<>();
         if (root == null) {
-            return result;
+            return ans;
         }
-        inorderTraversal(result, root);
-        return result;
-    }
-
-    private void inorderTraversal(List<Integer> result, TreeNode root) {
-        if (root.left != null) {
-            inorderTraversal(result, root.left);
-        }
-        result.add(root.val);
-        if (root.right != null) {
-            inorderTraversal(result, root.right);
-        }
+        inorderTraversal(root.left);
+        ans.add(root.val);
+        inorderTraversal(root.right);
+        return ans;
     }
 }
 
