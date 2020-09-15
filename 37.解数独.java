@@ -43,71 +43,63 @@
  * 
  */
 class Solution {
+    int[] nums = new int[10];
     public void solveSudoku(char[][] board) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] != '.') {
+                    nums[board[i][j] - '0']++;
+                }
+            }
+        }
         bt(board, 0, '1');
     }
 
-    public boolean bt(char[][] board, int index, char c) {
-        if (index >= 81) {
+    private boolean bt(char[][] board, int idx, char num) {
+        if (num > '9') {
+            return false;
+        }
+        if (idx == 81) {
             return true;
         }
+        if (nums[num - '0'] > 9) {
+            return false;
+        }
+        int row = idx / 9;
+        int col = idx % 9;
+        
+        if (board[row][col] != '.') {
+            return bt(board, idx + 1, '1');
+        }
 
-        int row = index / 9;
-        int col = index % 9;
-
-        if (board[row][col] == '.') {
-            for (; c <= '9'; c++) {
-                board[row][col] = c;
-                boolean isValid = check(getRow(board, index)) && check(getCol(board, index)) && check(getBlock(board, index));
-                if (isValid && bt(board, index + 1, '1')) {
-                    return true;
-                } else {
-                    board[row][col] = '.';//恢复原样
+        for (int j = 0; j < 9; j++) {
+            if (board[row][j] == num) {
+                return bt(board, idx, (char) (num + 1));
+            }
+        }
+        for (int i = 0; i < 9; i++) {
+            if (board[i][col] == num) {
+                return bt(board, idx, (char) (num + 1));
+            }
+        }
+        int x = row / 3 * 3;
+        int y = col / 3 * 3;
+        for (int i = x + 0; i < x + 3; i++) {
+            for (int j = y + 0; j < y + 3; j++) {
+                if (board[i][j] == num) {
+                    return bt(board, idx, (char) (num + 1));
                 }
             }
-        } else {
-            return bt(board, index + 1, '1');
         }
-
-        return false;
-    }
-    public char[] getRow(char[][] board, int index) {
-        return board[index / 9];
-    }
-    public char[] getCol(char[][] board, int index) {
-        char[] col = new char[9];
-        for (int j = 0; j < 9; j++) {
-            col[j] = board[j][index % 9];
+        board[row][col] = num;
+        nums[num - '0']++;
+        
+        if (bt(board, idx + 1, '1')) {
+            return true;
         }
-        return col;
-    }
-    public char[] getBlock(char[][] board, int index) {
-        char[] block = new char[9];
-        int i = index / 9 / 3;
-        int j = (index % 9) / 3;
-        block[0] = board[i * 3][j * 3];
-        block[1] = board[i * 3][j * 3 + 1];
-        block[2] = board[i * 3][j * 3 + 2];
-        block[3] = board[i * 3 + 1][j * 3];
-        block[4] = board[i * 3 + 1][j * 3 + 1];
-        block[5] = board[i * 3 + 1][j * 3 + 2];
-        block[6] = board[i * 3 + 2][j * 3];
-        block[7] = board[i * 3 + 2][j * 3 + 1];
-        block[8] = board[i * 3 + 2][j * 3 + 2];
-        return block;
-    }
-    private boolean check(char[] chars) {
-        boolean[] booleans = new boolean[9];
-        for (char c : chars) {
-            if (c == '.') {
-                continue;
-            }
-            if (booleans[c - 48 - 1]) {
-                return false;
-            }
-            booleans[c - 48 - 1] = true;
-        }
-        return true;
+        board[row][col] = '.';
+        nums[num - '0']--;
+        return bt(board, idx, (char) (num + 1));
     }
 }
 
