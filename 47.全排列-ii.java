@@ -27,34 +27,31 @@
  * 
  */
 class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
     public List<List<Integer>> permuteUnique(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        List<Integer> rem = new ArrayList<>();
-        for (int num : nums) {
-            rem.add(num);
-        }
-        Collections.sort(rem);
-        permuteUnique(result, new ArrayList<>(), rem);
-        return result;
+        Arrays.sort(nums);
+        boolean[] visited = new boolean[nums.length];
+        bt(new ArrayList<>(), nums, visited, 0);
+        return ans;
     }
 
-
-    public void permuteUnique(List<List<Integer>> result, List<Integer> single, List<Integer> rem) {
-        if (rem.size() == 0) {
-            result.add(single);
+    private void bt(List<Integer> list, int[] nums, boolean[] visited, int count) {
+        if (count == nums.length) {
+            ans.add(new ArrayList<>(list));
             return;
         }
-
-        for (int i = 0; i < rem.size(); i++) {
-            if (i > 0 && rem.get(i).equals(rem.get(i - 1))) {
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && !visited[i - 1] && nums[i] == nums[i - 1]) {
                 continue;
             }
-            Integer v = rem.get(i);
-            single.add(v);
-            ArrayList<Integer> newRem = new ArrayList<>(rem);
-            newRem.remove(v);
-            permuteUnique(result, new ArrayList<>(single), newRem);
-            single.remove(single.size() - 1);
+            if (visited[i]) {
+                continue;
+            }
+            visited[i] = true;
+            list.add(nums[i]);
+            bt(list, nums, visited, count + 1);
+            list.remove(list.size() - 1);
+            visited[i] = false;
         }
     }
 }
