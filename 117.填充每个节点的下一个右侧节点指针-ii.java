@@ -73,30 +73,29 @@ class Solution {
         if (root == null) {
             return null;
         }
-        if (root.right != null) {
-            connect(root.right, root.next);
-        }
-        if (root.left != null) {
-            connect(root.left, root);
-        }
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            Node pre = null;
+            for (int i = 0; i < size; i++) {
+                Node node = queue.poll();
+                if (node == null) {
+                    continue;
+                }
+                if (pre != null) {
+                    pre.next = node;
+                }
+                pre = node;
 
-        connect(root.right);
-        connect(root.left);
-        return root;
-    }
-    
-    private void connect(Node start, Node nextPar) {
-        while (nextPar != null) {
-            if (nextPar.left != null && nextPar.left != start) {
-                start.next = nextPar.left;
-                break;
+                queue.add(node.left);
+                queue.add(node.right);
             }
-            if (nextPar.right != null) {
-                start.next = nextPar.right;
-                break;
+            if (pre != null) {
+                pre.next = null;
             }
-            nextPar = nextPar.next;
         }
+        return root;
     }
 }
 
