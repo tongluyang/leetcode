@@ -68,23 +68,14 @@
  */
 public class Solution {
     public boolean hasCycle(ListNode head) {
-        if (head == null) {
-            return false;
-        }
-        if (head.next == null) {
-            return false;
-        }
-        ListNode next = head.next;
-        ListNode nextNext = head.next.next;
-        while (next != null && nextNext != null) {
-            if (next == nextNext) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
                 return true;
             }
-            next = next.next;
-            if (nextNext.next == null) {
-                return false;
-            }
-            nextNext = nextNext.next.next;
         }
         return false;
     }
