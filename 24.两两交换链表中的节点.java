@@ -38,26 +38,11 @@ class Solution {
         if (head == null || head.next == null) {
             return head;
         }
-
-        ListNode result = head.next;
-
-        ListNode pre = null;
-
-        while (head != null && head.next != null) {
-            ListNode second = head.next;
-            head.next = second.next;
-            second.next = head;
-
-            if (pre != null) {
-                pre.next = second;
-            }
-
-            pre = head;
-
-            head = head.next;
-        }
-
-        return result;
+        ListNode newHead = head.next;
+        ListNode remainder = head.next.next;
+        newHead.next = head;
+        head.next = swapPairs(remainder);
+        return newHead;
     }
 }
 
