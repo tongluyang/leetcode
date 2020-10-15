@@ -72,13 +72,17 @@ class Node {
 class Solution {
     public Node connect(Node root) {
         if (root == null) {
-            return null;
+            return root;
         }
         if (root.left != null) {
             root.left.next = root.right;
-        }
-        if (root.next != null && root.left != null) {
-            root.right.next = root.next.left;
+            Node left = root.left;
+            Node right = root.right;
+            while (left != null) {
+                left.next = right;
+                left = left.right;
+                right = right.left;
+            }
         }
         connect(root.left);
         connect(root.right);
