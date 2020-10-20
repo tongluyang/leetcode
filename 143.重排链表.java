@@ -38,27 +38,26 @@
  * }
  */
 class Solution {
+    Stack<ListNode> stack = new Stack<>();
     public void reorderList(ListNode head) {
-        if (head == null) {
-            return;
-        }
-        Stack<ListNode> stack = new Stack<>();
         ListNode tmp = head;
         while (tmp != null) {
             stack.push(tmp);
             tmp = tmp.next;
         }
+        helper(head);
+    }
 
-        tmp = head;
-        ListNode p = tmp;
-        while (p != stack.peek() && p.next != stack.peek()) {
-            tmp = p.next;
-            ListNode inserted = stack.pop();
-            stack.peek().next = null;
-            p.next = inserted;
-            inserted.next = tmp;
-            p = tmp;
+    private ListNode helper(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
         }
+        ListNode next = stack.pop();
+        stack.peek().next = null;
+        ListNode nextHead = head.next;
+        head.next = next;
+        next.next = helper(nextHead);
+        return head;
     }
 }
 // @lc code=end
