@@ -42,29 +42,20 @@
 class Solution {
     public List<Integer> partitionLabels(String S) {
         List<Integer> ans = new ArrayList<>();
-        int[] count = new int[26];
+        int[] last = new int[26];
         char[] chars = S.toCharArray();
-        for (char c : chars) {
-            count[c - 'a']++;
+        for (int i = 0; i < chars.length; i++) {
+            last[chars[i] - 'a'] = i;
         }
-        int l = 0;
-        Set<Character> set = new HashSet<>();
-        int[] tmp = new int[26];
-        for (char c : chars) {
-            set.add(c);
-            l++;
-            tmp[c - 'a']++;
-            boolean split = true;
-            for (char x : set) {
-                if (tmp[x - 'a'] != count[x - 'a']) {
-                    split = false;
-                    break;
-                }
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (last[chars[i] - 'a'] > end) {
+                end = last[chars[i] - 'a'];
             }
-            if (split) {
-                set.clear();
-                ans.add(l);
-                l = 0;
+            if (i == end) {
+                ans.add(end - start + 1);
+                start = i + 1;
             }
         }
         return ans;
