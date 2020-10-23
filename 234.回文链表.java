@@ -42,40 +42,42 @@
  */
 class Solution {
     public boolean isPalindrome(ListNode head) {
-        ListNode f = head;
-        ListNode s = head;
-        ListNode pre = head;
-        boolean odd;
-        while (true) {
-            if (f == null) {
+        if (head == null) {
+            return true;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        boolean odd = true;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == null) {
                 odd = false;
-                break;
-            } else if (f.next == null) {
-                odd = true;
-                break;
-            }
-            f = f.next.next;
-            ListNode cur = s;
-            s = s.next;
-            if (cur != head) {
-                pre.next = s;
-                cur.next = head;
-                head = cur;
             }
         }
         if (odd) {
-            s = s.next;
+            slow = slow.next;
         }
-        while (true) {
-            if (s == null) {
-                return true;
-            }
-            if (head.val != s.val) {
+        slow = revese(slow);
+        while (slow != null) {
+            if (head.val != slow.val) {
                 return false;
             }
             head = head.next;
-            s = s.next;
+            slow = slow.next;
         }
+        return true;
+    }
+
+    private ListNode revese(ListNode head) {
+        ListNode tail = null;
+        while (head != null) {
+            ListNode init = head;
+            head = head.next;
+            init.next = tail;
+            tail = init;
+        }
+        return tail;
     }
 }
 // @lc code=end
