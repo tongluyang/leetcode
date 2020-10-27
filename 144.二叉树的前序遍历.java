@@ -42,20 +42,15 @@
  * }
  */
 class Solution {
+    List<Integer> ans = new LinkedList<>();
     public List<Integer> preorderTraversal(TreeNode root) {
-        List<Integer> result = new ArrayList<>();
-        Stack<TreeNode> stack = new Stack<>();
-        stack.push(root);
-        while (!stack.empty()) {
-            TreeNode node = stack.pop();
-            if (node == null) {
-                continue;
-            }
-            result.add(node.val);
-            stack.push(node.right);
-            stack.push(node.left);
+        if (root == null) {
+            return ans;
         }
-        return result;
+        ans.add(root.val);
+        preorderTraversal(root.left);
+        preorderTraversal(root.right);
+        return ans;
     }
 }
 // @lc code=end
