@@ -59,20 +59,20 @@
  * }
  */
 class Solution {
+    int parent = 0;
     public int sumNumbers(TreeNode root) {
-        return sumNumbers(root, 0);
-    }
-
-    public int sumNumbers(TreeNode root, int base) {
         if (root == null) {
             return 0;
         }
-        int sum = base * 10 + root.val;
         if (root.left == null && root.right == null) {
-            return sum;
+            return parent * 10 + root.val;
         }
-        return sumNumbers(root.left, sum) +
-                sumNumbers(root.right, sum);
+        int sum = 0;
+        parent = parent * 10 + root.val;
+        sum += sumNumbers(root.left);
+        sum += sumNumbers(root.right);
+        parent /= 10;
+        return sum;
     }
 }
 
