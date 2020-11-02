@@ -46,12 +46,10 @@ class Solution {
         for (int num : nums2) {
             set2.add(num);
         }
-        Set<Integer> set3 = new HashSet<>(set1);
-        set1.removeAll(set2);
-        set3.removeAll(set1);
-        int[] res = new int[set3.size()];
+        set1.retainAll(set2);
+        int[] res = new int[set1.size()];
         int i = 0;
-        for (int num : set3) {
+        for (int num : set1) {
             res[i++] = num;
         }
         return res;
