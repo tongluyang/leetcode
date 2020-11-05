@@ -61,49 +61,46 @@ class Solution {
         if (!wordList.contains(endWord)) {
             return 0;
         }
-        Set<String> dict = new HashSet<>(wordList);
-        Set<String> upper = new HashSet<>();
         Queue<String> queue = new LinkedList<>();
-        queue.offer(beginWord);
-        int length = 0;
+        queue.add(endWord);
+        int step = 0;
         while (!queue.isEmpty()) {
-            length++;
             int size = queue.size();
-            Set<String> curLevel = new HashSet<>();
+            step++;
             for (int i = 0; i < size; i++) {
-                String curWord = queue.poll();
-                List<String> allNext = getAllNext(curWord, dict);
-                for (String word : allNext) {
-                    if (!upper.contains(word)) {
-                        curLevel.add(word);
-                        queue.offer(word);
-                        if (endWord.equals(word)) {
-                            return length + 1;
-                        }
+                String target = queue.poll();
+                if (isNext(target, beginWord)) {
+                    return step + 1;
+                }
+                for (String word : wordList) {
+                    if (word.equals(target)) {
+                        continue;
+                    }
+                    if (isNext(word, target)) {
+                        queue.add(word);
                     }
                 }
             }
-            upper.addAll(curLevel);
+            wordList.removeAll(queue);
         }
         return 0;
     }
 
-    private List<String> getAllNext(String word, Set<String> wordList) {
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < word.length(); i++) {
-            char[] chars = word.toCharArray();
-            char origin = chars[i];
-            for (char c = 'a'; c <= 'z'; c++) {
-                if (origin != c) {
-                    chars[i] = c;
-                    String s = new String(chars);
-                    if (wordList.contains(s)) {
-                        list.add(s);
-                    }
+    private boolean isNext(String a, String b) {
+        int l = a.length();
+        int flag = 0;
+        for (int i = 0; i < l; i++) {
+            if (a.charAt(i) == b.charAt(i)) {
+                continue;
+            }
+            if (a.charAt(i) != b.charAt(i)) {
+                if (flag == 0) {
+                    flag = 1;
+                } else {
+                    return false;
                 }
             }
         }
-        return list;
+        return true;
     }
 }
-
