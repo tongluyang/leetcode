@@ -32,53 +32,43 @@
  * 
  */
 class Solution {
+    int[][] tmp;
+    int count = 0;
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        List<int[]> list = new ArrayList<>(intervals.length);
-        if (intervals.length == 0) {
-            list.add(newInterval);
-            return list.toArray(new int[list.size()][]);
+        int len = intervals.length;
+        if (len == 0) {
+            return new int[][]{newInterval};
         }
-        int[] ints;
-        boolean inserted = false;
-        if (newInterval[0] <= intervals[0][0]) {
-            ints = newInterval;
-            inserted = true;
-        } else {
-            ints = intervals[0];
-        }
-        for (int i = 0; i < intervals.length; i++) {
-            if (!inserted && newInterval[0] < intervals[i][0]) {
-                if (ints[1] >= newInterval[0]) {
-                    ints[1] = Math.max(ints[1], newInterval[1]);
-                } else {
-                    list.add(ints);
-                    ints = newInterval;
-                }
-
-                i--;
-                inserted = true;
-                continue;
-            }
-
-            if (ints[1] >= intervals[i][0]) {
-                ints[1] = Math.max(ints[1], intervals[i][1]);
-            } else {
-                list.add(ints);
-                ints = intervals[i];
+        tmp = new int[len + 1][2];
+        for (int i = 0; i < len; i++) {
+            int[] interval = intervals[i];
+            int max = interval[1];
+            newInterval = merge(interval, newInterval);
+            //最大值没变，或者是最后一个了，插入合并的数组，后面的直接copy
+            if (newInterval[1] == max || i == len - 1) {
+                tmp[count++] = newInterval;
+                System.arraycopy(intervals, i + 1, tmp, count, len - i - 1);
+                count += len - i - 1;
+                break;
             }
         }
+        int[][] ans = new int[count][2];
+        System.arraycopy(tmp, 0, ans, 0, count);
+        return ans;
+    }
 
-        if (!inserted) {
-            if (ints[1] >= newInterval[0]) {
-                ints[1] = Math.max(ints[1], newInterval[1]);
-            } else {
-                list.add(ints);
-                ints = newInterval;
-            }
+    private int[] merge(int[] interval, int[] newInterval) {
+        if (newInterval[1] < interval[0]) {//插入前面，不相交
+            tmp[count++] = newInterval;
+            return interval;
         }
-
-        list.add(ints);
-        return list.toArray(new int[list.size()][]);
+        if (interval[1] < newInterval[0]) {//后面，不相交
+            tmp[count++] = interval;
+            return newInterval;
+        }
+        int[] merged = new int[2];
+        merged[0] = Math.min(interval[0], newInterval[0]);
+        merged[1] = Math.max(interval[1], newInterval[1]);
+        return merged;
     }
 }
-
