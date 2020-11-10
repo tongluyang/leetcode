@@ -27,60 +27,26 @@
  */
 class Solution {
     public void nextPermutation(int[] nums) {
-        if (nums.length < 2) {
+        int len = nums.length;
+        if (len < 2) {
             return;
         }
-
-        int index1 = -1;
-        int index2 = nums.length - 1;
-        int value = 0;
-        for (int i = nums.length - 1; i >= 1; i--) {
-            if (nums[i] > nums[i - 1]) {
-                index1 = i - 1;
-                value = nums[i];
-                index2 = i;
-                break;
-            }
-        }
-
-        if (index1 == -1) {
-            List<Integer> list = new ArrayList<>();
-            for (int num : nums) {
-                list.add(num);
-            }
-
-            Collections.sort(list);
-            for (int i = 0; i < list.size(); i++) {
-                nums[i] = list.get(i);
-            }
-            return;
-        }
-
-        for (int i = index1 + 1; i < nums.length; i++) {
-            if (nums[i] > nums[index1] && nums[i] < value) {
-                value = nums[i];
-                index2 = i;
-
-                if (nums[i] - 1 == nums[index1]) {
-                    break;
+        for (int i = len - 2; i >= 0; i--) {
+            for (int j = len - 1; j > i; j--) {
+                if (nums[i] < nums[j]) {
+                    swap(i, j, nums);
+                    Arrays.sort(nums, i + 1, len);
+                    return;
                 }
             }
         }
+        Arrays.sort(nums);
+    }
 
-        int tmpValue = nums[index1];
-        nums[index1] = nums[index2];
-        nums[index2] = tmpValue;
-
-        List<Integer> list = new ArrayList<>();
-        for (int i = index1 + 1; i < nums.length; i++) {
-            list.add(nums[i]);
-        }
-        Collections.sort(list);
-
-        for (int i = index1 + 1; i < nums.length; i++) {
-            nums[i] = list.get(i - index1 - 1);
-        }
-
+    private void swap(int i, int j, int[] nums) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
     }
 }
 
