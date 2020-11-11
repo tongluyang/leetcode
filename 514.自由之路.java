@@ -58,8 +58,39 @@
 
 // @lc code=start
 class Solution {
+    int[][] mem;
     public int findRotateSteps(String ring, String key) {
+        mem = new int[ring.length()][key.length()];
+        return findRotateSteps(ring, key, 0, 0);
+    }
 
+    private int findRotateSteps(String ring, String key, int offset, int i) {
+        if (i == key.length()) {
+            return 0;
+        }
+        if (mem[offset][i] > 0) {
+            return mem[offset][i];
+        }
+        Map<Integer, Integer> all = turn(ring, key.charAt(i), offset);
+        int min = Integer.MAX_VALUE;
+        for (Integer newOffset : all.keySet()) {
+            int step = all.get(newOffset);
+            int next = findRotateSteps(ring, key, newOffset, i + 1);
+
+            min = Math.min(min, step + next);
+        }
+        return mem[offset][i] = min;
+    }
+
+    private Map<Integer, Integer> turn(String ring, char target, int offset) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < ring.length(); i++) {
+            int idx = (i + offset) % ring.length();
+            if (ring.charAt(idx) == target) {
+                map.put(idx, Math.min(i, ring.length() - i) + 1);
+            }
+        }
+        return map;
     }
 }
 // @lc code=end
