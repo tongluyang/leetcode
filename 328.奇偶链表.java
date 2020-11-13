@@ -48,27 +48,33 @@
  */
 class Solution {
     public ListNode oddEvenList(ListNode head) {
-        if (head == null) {
-            return head;
-        }
-        ListNode odd = head;
-        ListNode even = head.next;
-        if (even == null) {
+        if (head == null || head.next == null) {
             return head;
         }
         ListNode evenHead = head.next;
+        ListNode cur = evenHead.next;
 
-        while (even != null && even.next != null) {
-            ListNode actionNode = even.next;
-            //原位置删除
-            even.next = actionNode.next;
-            even = even.next;
+        evenHead.next = null;
+        head.next = null;
 
-            //新位置插入
-            odd.next = actionNode;
-            actionNode.next = evenHead;
-            odd = odd.next;
+        ListNode odd = head;
+        ListNode even = evenHead;
+
+        int idx = 3;
+        while (cur != null) {
+            ListNode tmp = cur.next;
+            cur.next = null;
+            if (idx % 2 == 1) {
+                odd.next = cur;
+                odd = cur;
+            } else {
+                even.next = cur;
+                even = cur;
+            }
+            cur = tmp;
+            idx++;
         }
+        odd.next = evenHead;
         return head;
     }
 }
