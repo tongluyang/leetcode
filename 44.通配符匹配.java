@@ -73,36 +73,34 @@
  */
 class Solution {
     public boolean isMatch(String s, String p) {
-        int lenS = s.length();
-        int lenP = p.length();
-        boolean[][] dp = new boolean[lenS + 1][lenP + 1];
-        for (int i = 0; i <= lenS; i++) {
-            for (int j = 0; j <= lenP; j++) {
-                if (i == 0 && j == 0) {//都是空
+        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        for (int i = 0; i <= s.length(); i++) {
+            for (int j = 0; j <= p.length(); j++) {
+                //空匹配空
+                if (i == 0 && j == 0) {
                     dp[i][j] = true;
                     continue;
                 }
-                if (j == 0) {//pattern空，string不空，肯定不匹配
+                //空不匹配任何有内容的字符串
+                if (j == 0) {
                     dp[i][j] = false;
                     continue;
                 }
-                char cp = p.charAt(j - 1);
-                if (cp == '*') {
-                    boolean flag = false;
-                    for (int k = 0; k <= i; k++) {
-                        if (dp[k][j - 1]) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    dp[i][j] = flag;
-                } else if (cp == '?') {
-                    dp[i][j] = i == 0 ? false : dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = i == 0 ? false : (cp == s.charAt(i - 1) && dp[i - 1][j - 1]);
+                //*，之前匹配，现在还匹配
+                if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i][j - 1] || (i > 0 && dp[i - 1][j]);
+                    continue;
+                }
+                //字符串空，规则又不是*，不匹配
+                if (i == 0) {
+                    dp[i][j] = false;
+                    continue;
+                }
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
                 }
             }
         }
-        return dp[lenS][lenP];
+        return dp[s.length()][p.length()];
     }
 }
