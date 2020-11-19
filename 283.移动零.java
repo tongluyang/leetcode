@@ -32,17 +32,25 @@
 // @lc code=start
 class Solution {
     public void moveZeroes(int[] nums) {
-        int count = 0;
+        int i0 = 0;
+        boolean find0 = true;
         for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == 0) {
-                count++;
-            } else {
-                if (count > 0) {
-                    nums[i - count] = nums[i];
-                    nums[i] = 0;
-                }
+            if (find0 && nums[i] == 0) {
+                i0 = i;
+                find0 = false;
+                continue;
+            }
+            if (!find0 && nums[i] != 0) {
+                swap(nums, i, i0);
+                i0++;
             }
         }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
     }
 }
 // @lc code=end
