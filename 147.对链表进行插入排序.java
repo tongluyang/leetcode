@@ -56,36 +56,37 @@
  */
 class Solution {
     public ListNode insertionSortList(ListNode head) {
-        ListNode p = head;
-        ListNode end = null;
-        ListNode h = null;
-        while (p != null) {
-            ListNode next = p.next;
-            if (h == null) {
-                h = p;
-                end = p;
-            } else {
-                if (p.val >= end.val) {
-                    end = p;
-                } else {
-                    ListNode before = null;
-                    ListNode after = h;
-                    while (p.val > after.val) {
-                        before = after;
-                        after = after.next;
-                    }
-                    end.next = p.next;
-                    p.next = after;
-                    if (before == null) {
-                        h = p;
-                    } else {
-                        before.next = p;
-                    }
-                }
-            }
-            p = next;
+        if (head == null || head.next == null) {
+            return head;
         }
-        return h;
+        ListNode cur = head.next;
+        //前面切断
+        head.next = null;
+        while (cur != null) {
+            ListNode next = cur.next;
+            //后面切断
+            cur.next = null;
+
+            ListNode pre = null;
+            ListNode tmp = head;
+            while (tmp != null && cur.val > tmp.val) {
+                pre = tmp;
+                tmp = tmp.next;
+            }
+            head = insert(head, pre, cur, tmp);
+            cur = next;
+        }
+        return head;
+    }
+
+    private ListNode insert(ListNode head, ListNode pre, ListNode cur, ListNode tail) {
+        if (pre == null) {
+            cur.next = tail;
+            return cur;
+        }
+        pre.next = cur;
+        cur.next = tail;
+        return head;
     }
 }
 // @lc code=end
