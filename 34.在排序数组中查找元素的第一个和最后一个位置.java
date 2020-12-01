@@ -32,75 +32,39 @@
  */
 class Solution {
     public int[] searchRange(int[] nums, int target) {
-        int[] range = {-1, -1};
+        return searchRange(nums, target, 0, nums.length - 1);
+    }
 
-
-        if (nums.length == 0) {
-            return range;
+    private int[] searchRange(int[] nums, int target, int start, int end) {
+        if (start > end) {
+            return new int[]{-1, -1};
         }
-
-        if (nums[0] > target) {
-            return range;
+        if (start == end) {
+            if (nums[start] == target) {
+                return new int[]{start, start};
+            }
+            return new int[]{-1, -1};
         }
-
-        if (nums[nums.length - 1] < target) {
-            return range;
+        int mid = (start + end) >>> 1;
+        int[] left;
+        int[] right;
+        if (nums[mid] > target) {
+            left = searchRange(nums, target, start, mid);
+            right = new int[]{-1, -1};
+        } else if (nums[mid] < target) {
+            left = new int[]{-1, -1};
+            right = searchRange(nums, target, mid + 1, end);
+        } else {
+            left = searchRange(nums, target, start, mid);
+            right = searchRange(nums, target, mid + 1, end);
         }
-
-        int mid = nums.length / 2;
-
-        int start = 0;
-        int end = nums.length - 1;
-        for (int i = mid; i < nums.length;) {
-            if (nums[i] > target) {
-                end = i;
-                i = i / 2;
-                continue;
-            }
-
-            if (nums[i] < target) {
-                start = (i + end) / 2 + (i + end) % 2;
-                if (start == end && nums[start] != target) {
-                    return range;
-                }
-                i = start;
-                continue;
-            }
-
-            mid = i;
-
-            while (true) {
-                if (i == 0) {
-                    start = 0;
-                    break;
-                }
-                if (nums[--i] != target) {
-                    start = i + 1;
-                    break;
-                }
-            }
-
-            i = mid;
-
-            while (true) {
-                if (i == nums.length - 1) {
-                    end = i;
-                    break;
-                }
-                if (nums[++i] != target) {
-                    end = i - 1;
-                    break;
-                }
-            }
-
-            break;
+        if (left[1] == -1) {
+            return right;
         }
-
-        range[0] = start;
-        range[1] = end;
-
-
-        return range;
+        if (right[0] == -1) {
+            return left;
+        }
+        return new int[]{left[0], right[1]};
     }
 }
 
