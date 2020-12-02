@@ -52,74 +52,100 @@
 // @lc code=start
 class Solution {
     public int[] maxNumber(int[] nums1, int[] nums2, int k) {
-        int[] res = new int[k];
-        Queue<P> queue = new LinkedList<>();
-        queue.add(new P(0, 0));
-        int rem = k;
-        while (!queue.isEmpty() && rem > 0) {
-            int size = queue.size();
-            int max = -1;
-            Map<Integer, List<Queue<P>>> map = new HashMap<>();
-            for (int i = 0; i < size; i++) {
-                final P p = queue.poll();
-                int p1 = p.p1;
-                int p2 = p.p2;
-                Queue<P> tmpQueue = new LinkedList<>();
-                int cur = maxEle(nums1, nums2, p1, p2, rem, tmpQueue);
-                final List<Queue<P>> queues = map.computeIfAbsent(cur, key -> new ArrayList<>());
-                queues.add(tmpQueue);
-                if (cur > max) {
-                    max = cur;
-                }
-            }
-            for (Queue<P> tmpQueue : map.get(max)) {
-                while (!tmpQueue.isEmpty()) {
-                    final P p = tmpQueue.poll();
-                    if (!queue.contains(p)) {
-                        queue.add(p);
-                    }
-                }
-            }
-            res[k - rem] = max;
-            rem--;
-        }
-        return res;
-    }
-
-    static class P {
-        int p1;
-        int p2;
-        public P(int p1, int p2) {
-            this.p1 = p1;
-            this.p2 = p2;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return ((P) obj).p1 == p1 && ((P) obj).p2 == p2;
-        }
-    }
-
-    private int maxEle(int[] num1, int[] num2, int p1, int p2, int rem, Queue<P> queue) {
-        int max = -1;
-        for (int num = 9; num >= 0 && (max == -1 || max == num); num--) {
-            for (int i = p1; i <= num1.length && num1.length - i + num2.length - p2 >= rem; i++) {
-                if (i < num1.length && num1[i] == num) {
-                    max = num;
-                    queue.add(new P(i + 1, p2));
-                    break;
-                }
-            }
-
-            for (int j = p2; j <= num2.length && num1.length - p1 + num2.length - j >= rem; j++) {
-                if (j < num2.length && num2[j] == num) {
-                    max = num;
-                    queue.add(new P(p1, j + 1));
-                    break;
-                }
+        int m = nums1.length;
+        int n = nums2.length;
+        int start = Math.max(0, k - n);
+        int end = Math.min(m, k);
+        int[] max = new int[k];
+        for (int i = start; i <= end; i++) {
+            int[] maxseq1 = maxseq(nums1, i);
+            //System.out.println(Arrays.toString(maxseq1));
+            int[] maxseq2 = maxseq(nums2, k - i);
+            //System.out.println(Arrays.toString(maxseq2));
+            int[] seq = merge(maxseq1, maxseq2);
+            //System.out.println(Arrays.toString(seq));
+            if (compare(seq, max, 0, 0) > 0) {
+                System.arraycopy(seq, 0, max, 0, k);
             }
         }
         return max;
+    }
+
+    private int compare(int[] seq1, int[] seq2, int start1, int start2) {
+        int len = Math.min(seq1.length - start1, seq2.length - start2);
+        for (int i = 0; i < len; i++) {
+            if (seq1[i + start1] > seq2[i + start2]) {
+                return 1;
+            } else if (seq1[i + start1] < seq2[i + start2]) {
+                return -1;
+            }
+        }
+        return (seq1.length - start1) - (seq2.length - start2);
+    }
+
+    private int[] merge(int[] seq1, int[] seq2) {
+        int len1 = seq1.length;
+        int len2 = seq2.length;
+        int[] seq = new int[len1 + len2];
+        int p1 = 0;
+        int p2 = 0;
+        int i = 0;
+        while (p1 < len1 || p2 < len2) {
+            if (p1 >= len1) {
+                seq[i++] = seq2[p2++];
+                continue;
+            }
+            if (p2 >= len2) {
+                seq[i++] = seq1[p1++];
+                continue;
+            }
+            if (seq1[p1] < seq2[p2]) {
+                seq[i++] = seq2[p2++];
+            } else if (seq1[p1] > seq2[p2]) {
+                seq[i++] = seq1[p1++];
+            } else {
+                if (compare(seq1, seq2, p1 + 1, p2 + 1) > 0) {
+                    seq[i++] = seq1[p1++];
+                } else {
+                    seq[i++] = seq2[p2++];
+                }
+            }
+        }
+        return seq;
+    }
+
+    private int[] maxseq(int[] nums, int k) {
+        int len = nums.length;
+        //最多能丢弃的数量
+        int drop = len - k;
+        int[] stack = new int[k];
+        int top = -1;
+        for (int i = 0; i < len; i++) {
+            int num = nums[i];
+            while (true) {
+                //第一个数或比上一个数小或相等，留着
+                if (top < 0 || num <= stack[top]) {
+                    //满了
+                    if (top + 1 == k) {
+                        break;
+                    }
+                    stack[++top] = num;
+                    break;
+                } else {
+                    //比上一个数大，前一个丢掉
+                    //前提是有能丢的
+                    //并且后面剩下的数字要能填满stack
+                    if (drop > 0 && (len - i) >= (k - top)) {
+                        top--;
+                        drop--;
+                    } else {
+                        stack[++top] = num;
+                        break;
+                    }
+                }
+            }
+        }
+        return stack;
     }
 }
 // @lc code=end
