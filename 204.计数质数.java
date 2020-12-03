@@ -27,21 +27,20 @@
 // @lc code=start
 class Solution {
     public int countPrimes(int n) {
-        if (n <= 2) {
+        if (n < 2) {
             return 0;
         }
         boolean[] p = new boolean[n];
         Arrays.fill(p, true);
-        double sqrt = Math.sqrt(n);
-        for (int i = 2; i < sqrt; i++) {
+        for (int i = 2; i * i < n; i++) {
             if (p[i]) {
-                for (int j = i * i; j < p.length; j+=i) {
+                for (int j = i + i; j < n; j += i) {
                     p[j] = false;
                 }
             }
         }
         int count = 0;
-        for (int i = 2; i < p.length; i++) {
+        for (int i = 2; i < n; i++) {
             if (p[i]) {
                 count++;
             }
