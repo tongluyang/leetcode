@@ -44,20 +44,14 @@
  */
 class Solution {
     public int uniquePaths(int m, int n) {
-        if (m == 0 || n == 0) {
-            return 0;
-        }
-        int[][] dp = new int[n][m];
-        for (int row = 0; row < n; row++) {
-            for (int col = 0; col < m; col++) {
-                if (row == 0) {
-                    dp[row][col] = 1;
-                } else {
-                    dp[row][col] = dp[row - 1][col] + (col == 0 ? 0 : dp[row][col - 1]);
-                }
+        int[] dp = new int[m];
+        Arrays.fill(dp, 1);
+        for (int j = 1; j < n; j++) {
+            for (int i = 1; i < m; i++) {
+                dp[i] += dp[i - 1];
             }
         }
-        return dp[n - 1][m - 1];
+        return dp[m - 1];
     }
 }
 
