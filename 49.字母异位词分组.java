@@ -39,11 +39,14 @@ class Solution {
         for (String str : strs) {
             char[] chars = str.toCharArray();
             Arrays.sort(chars);
-            List<String> strings = map.computeIfAbsent(String.valueOf(chars), v -> new ArrayList<>());
-            strings.add(str);
+            String key = String.valueOf(chars);
+            List<String> list = map.computeIfAbsent(key, k -> new ArrayList<>());
+            list.add(str);
         }
-
-        return new ArrayList<>(map.values());
+        List<List<String>> ans = new ArrayList<>();
+        for (String key : map.keySet()) {
+            ans.add(map.get(key));
+        }
+        return ans;
     }
 }
-
