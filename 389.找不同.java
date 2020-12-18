@@ -39,17 +39,14 @@
 // @lc code=start
 class Solution {
     public char findTheDifference(String s, String t) {
-        int[] map = new int[26];
-        for (char c : s.toCharArray()) {
-            map[c - 'a']++;
+        int len = s.length();
+        char ans = 0;
+        for (int i = 0; i < len; i++) {
+            ans -= s.charAt(i);
+            ans += t.charAt(i);
         }
-        for (char c : t.toCharArray()) {
-            map[c - 'a']--;
-            if (map[c - 'a'] < 0) {
-                return c;
-            }
-        }
-        return 0;
+        ans += t.charAt(len);
+        return ans;
     }
 }
 // @lc code=end
